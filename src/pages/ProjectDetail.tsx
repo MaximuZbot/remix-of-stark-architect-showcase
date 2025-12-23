@@ -1,0 +1,160 @@
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import { projects } from "@/data/projects";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+const ProjectDetail = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  
+  const projectIndex = projects.findIndex(p => p.slug === slug);
+  const project = projects[projectIndex];
+  
+  const nextProject = projects[(projectIndex + 1) % projects.length];
+  const prevProject = projects[(projectIndex - 1 + projects.length) % projects.length];
+
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
+  const { ref: navRef, isVisible: navVisible } = useScrollAnimation();
+
+  if (!project) {
+    navigate("/");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      {/* Hero */}
+      <section className="pt-32 pb-20 bg-muted/20">
+        <div 
+          ref={heroRef}
+          className={`container mx-auto px-6 transition-all duration-700 ${
+            heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto">
+            <Link 
+              to="/#projects" 
+              className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Projects
+            </Link>
+            
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <span className="text-minimal text-muted-foreground">{project.category}</span>
+                <h1 className="text-4xl md:text-6xl font-light text-architectural mt-4 mb-6">
+                  {project.title}
+                </h1>
+                <p className="text-xl text-muted-foreground leading-relaxed">
+                  {project.description}
+                </p>
+                
+                <div className="mt-8">
+                  <h4 className="text-minimal text-muted-foreground mb-3">TECH STACK</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {project.techStack.map((tech, i) => (
+                      <span 
+                        key={i}
+                        className="px-4 py-2 border border-border bg-background text-sm"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="aspect-[4/3] bg-muted border border-border overflow-hidden">
+                <img 
+                  src={project.image} 
+                  alt={project.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Case Study Content */}
+      <section className="py-32">
+        <div 
+          ref={contentRef}
+          className={`container mx-auto px-6 transition-all duration-700 delay-200 ${
+            contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="max-w-4xl mx-auto space-y-20">
+            <div>
+              <h2 className="text-minimal text-muted-foreground mb-4">THE CHALLENGE</h2>
+              <p className="text-2xl font-light text-architectural leading-relaxed">
+                {project.challenge}
+              </p>
+            </div>
+            
+            <div>
+              <h2 className="text-minimal text-muted-foreground mb-4">THE SOLUTION</h2>
+              <p className="text-2xl font-light text-architectural leading-relaxed">
+                {project.solution}
+              </p>
+            </div>
+            
+            <div>
+              <h2 className="text-minimal text-muted-foreground mb-4">THE RESULTS</h2>
+              <p className="text-2xl font-light text-architectural leading-relaxed">
+                {project.results}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Project Navigation */}
+      <section className="py-20 border-t border-border">
+        <div 
+          ref={navRef}
+          className={`container mx-auto px-6 transition-all duration-700 ${
+            navVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              <Link 
+                to={`/project/${prevProject.slug}`}
+                className="group p-8 border border-border hover:border-foreground/20 transition-colors"
+              >
+                <div className="flex items-center text-muted-foreground mb-4">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <span className="text-minimal">PREVIOUS PROJECT</span>
+                </div>
+                <h3 className="text-xl font-light group-hover:text-muted-foreground transition-colors">
+                  {prevProject.title}
+                </h3>
+              </Link>
+              
+              <Link 
+                to={`/project/${nextProject.slug}`}
+                className="group p-8 border border-border hover:border-foreground/20 transition-colors text-right"
+              >
+                <div className="flex items-center justify-end text-muted-foreground mb-4">
+                  <span className="text-minimal">NEXT PROJECT</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+                <h3 className="text-xl font-light group-hover:text-muted-foreground transition-colors">
+                  {nextProject.title}
+                </h3>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default ProjectDetail;
