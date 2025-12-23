@@ -7,39 +7,37 @@ const About = () => {
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">ABOUT</h2>
               <h3 className="text-4xl md:text-6xl font-light text-architectural mb-12">
-                Design Philosophy
+                Builder Profile
               </h3>
               
               <div className="space-y-8">
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  We believe architecture should enhance human experience while respecting 
-                  the natural environment. Our practice focuses on creating spaces that 
-                  are both functional and poetic.
+                  I'm a Mechatronics Engineer turned solo AI and software builder.
+                  I design and ship end-to-end systems—full-stack apps, automation pipelines, 
+                  and computer vision tools that solve real operational problems.
                 </p>
                 
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Founded in 2015, our studio has completed over 200 projects across 
-                  residential, commercial, and cultural sectors. Each project begins 
-                  with careful listening and ends with thoughtful execution.
+                  I work solo, move fast, and focus on delivering production-ready systems.
                 </p>
               </div>
             </div>
             
             <div className="space-y-12">
               <div>
-                <h4 className="text-minimal text-muted-foreground mb-6">APPROACH</h4>
+                <h4 className="text-minimal text-muted-foreground mb-6">WORK PRINCIPLES</h4>
                 <div className="space-y-6">
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">Research</h5>
-                    <p className="text-muted-foreground">Deep understanding of context, culture, and climate</p>
+                    <h5 className="text-lg font-medium mb-2">Solo & Fast</h5>
+                    <p className="text-muted-foreground">Direct communication, rapid iteration, no overhead</p>
                   </div>
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">Collaboration</h5>
-                    <p className="text-muted-foreground">Close partnership with clients, engineers, and craftspeople</p>
+                    <h5 className="text-lg font-medium mb-2">End-to-End Delivery</h5>
+                    <p className="text-muted-foreground">From concept to production, handling every layer</p>
                   </div>
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">Innovation</h5>
-                    <p className="text-muted-foreground">Sustainable materials and forward-thinking design solutions</p>
+                    <h5 className="text-lg font-medium mb-2">Production-Ready</h5>
+                    <p className="text-muted-foreground">Systems built to run reliably in real environments</p>
                   </div>
                 </div>
               </div>
@@ -47,12 +45,12 @@ const About = () => {
               <div className="pt-8 border-t border-border">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <h4 className="text-minimal text-muted-foreground mb-2">FOUNDED</h4>
-                    <p className="text-xl">2015</p>
+                    <h4 className="text-minimal text-muted-foreground mb-2">LOCATION</h4>
+                    <p className="text-xl">Kochi & Bangalore</p>
                   </div>
                   <div>
-                    <h4 className="text-minimal text-muted-foreground mb-2">PROJECTS</h4>
-                    <p className="text-xl">200+</p>
+                    <h4 className="text-minimal text-muted-foreground mb-2">BACKGROUND</h4>
+                    <p className="text-xl">Mechatronics Engineer</p>
                   </div>
                 </div>
               </div>

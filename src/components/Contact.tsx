@@ -1,3 +1,5 @@
+import { Linkedin } from "lucide-react";
+
 const Contact = () => {
   return (
     <section id="contact" className="py-32 bg-background">
@@ -7,58 +9,50 @@ const Contact = () => {
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">GET IN TOUCH</h2>
               <h3 className="text-4xl md:text-6xl font-light text-architectural mb-12">
-                Let's Create Something
+                Let's Build
                 <br />
-                Extraordinary
+                Something Together
               </h3>
               
               <div className="space-y-8">
                 <div>
-                  <h4 className="text-minimal text-muted-foreground mb-2">EMAIL</h4>
-                  <a href="mailto:hello@archstudio.com" className="text-xl hover:text-muted-foreground transition-colors duration-300">
-                    hello@archstudio.com
-                  </a>
-                </div>
-                
-                <div>
-                  <h4 className="text-minimal text-muted-foreground mb-2">PHONE</h4>
-                  <a href="tel:+1234567890" className="text-xl hover:text-muted-foreground transition-colors duration-300">
-                    +1 (234) 567-8900
-                  </a>
-                </div>
-                
-                <div>
-                  <h4 className="text-minimal text-muted-foreground mb-2">STUDIO</h4>
+                  <h4 className="text-minimal text-muted-foreground mb-2">LOCATION</h4>
                   <address className="text-xl not-italic">
-                    123 Design Avenue
+                    Kochi & Bangalore
                     <br />
-                    New York, NY 10001
+                    India
                   </address>
+                </div>
+                
+                <div>
+                  <h4 className="text-minimal text-muted-foreground mb-2">AVAILABILITY</h4>
+                  <p className="text-xl">
+                    Available for freelance, startups, and full-time roles
+                  </p>
                 </div>
               </div>
             </div>
             
             <div className="space-y-8">
               <div>
-                <h4 className="text-minimal text-muted-foreground mb-6">FOLLOW US</h4>
+                <h4 className="text-minimal text-muted-foreground mb-6">CONNECT</h4>
                 <div className="space-y-4">
-                  <a href="#" className="block text-xl hover:text-muted-foreground transition-colors duration-300">
-                    Instagram
-                  </a>
-                  <a href="#" className="block text-xl hover:text-muted-foreground transition-colors duration-300">
+                  <a 
+                    href="https://www.linkedin.com/in/mohithkanna" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-xl hover:text-muted-foreground transition-colors duration-300"
+                  >
+                    <Linkedin className="w-5 h-5 mr-3" />
                     LinkedIn
-                  </a>
-                  <a href="#" className="block text-xl hover:text-muted-foreground transition-colors duration-300">
-                    Behance
                   </a>
                 </div>
               </div>
               
               <div className="pt-12 border-t border-border">
                 <p className="text-muted-foreground">
-                  We approach each project with curiosity, rigor, and a commitment to excellence. 
-                  Our process begins with listening, understanding your vision, and translating 
-                  it into spaces that exceed expectations.
+                  I approach each project with a focus on speed, clarity, and production-ready delivery. 
+                  Whether you need an AI system, a full-stack app, or automation tools—I build to ship.
                 </p>
               </div>
             </div>
