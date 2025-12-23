@@ -8,24 +8,24 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="text-minimal text-foreground">
-          ARCH STUDIO
-        </div>
+        <a href="/" className="text-minimal text-foreground hover:text-muted-foreground transition-colors duration-300">
+          MOHITH KANNA
+        </a>
         
         <div className="hidden md:flex items-center space-x-12">
-          <a href="/work" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-            WORK
+          <a href="#projects" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            PROJECTS
           </a>
-          <a href="/services" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-            SERVICES
+          <a href="#capabilities" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            CAPABILITIES
           </a>
-          <a href="/about" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          <a href="#about" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             ABOUT
           </a>
-          <a href="/blog" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-            BLOG
+          <a href="#tech" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            TECH
           </a>
-          <a href="/contact" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          <a href="#contact" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             CONTACT
           </a>
         </div>
@@ -48,19 +48,19 @@ const Navigation = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-background border-b border-border">
           <div className="container mx-auto px-6 py-6 space-y-4">
-            <a href="/work" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-              WORK
+            <a href="#projects" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+              PROJECTS
             </a>
-            <a href="/services" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-              SERVICES
+            <a href="#capabilities" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+              CAPABILITIES
             </a>
-            <a href="/about" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#about" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               ABOUT
             </a>
-            <a href="/blog" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
-              BLOG
+            <a href="#tech" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+              TECH
             </a>
-            <a href="/contact" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#contact" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CONTACT
             </a>
             
