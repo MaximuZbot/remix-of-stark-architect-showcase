@@ -1,10 +1,20 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 const About = () => {
+  const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
+  const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
+
   return (
     <section id="about" className="py-32 bg-muted/20">
       <div className="container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-20 items-center">
-            <div>
+            <div 
+              ref={leftRef}
+              className={`transition-all duration-700 ${
+                leftVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+            >
               <h2 className="text-minimal text-muted-foreground mb-4">ABOUT</h2>
               <h3 className="text-4xl md:text-6xl font-light text-architectural mb-12">
                 Builder Profile
@@ -23,7 +33,12 @@ const About = () => {
               </div>
             </div>
             
-            <div className="space-y-12">
+            <div 
+              ref={rightRef}
+              className={`space-y-12 transition-all duration-700 delay-200 ${
+                rightVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+            >
               <div>
                 <h4 className="text-minimal text-muted-foreground mb-6">WORK PRINCIPLES</h4>
                 <div className="space-y-6">
