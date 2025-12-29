@@ -1,3 +1,5 @@
+import skyindiaCrmImage from "@/assets/project-skyindia-crm.png";
+
 export interface Project {
   slug: string;
   title: string;
@@ -8,6 +10,8 @@ export interface Project {
   challenge: string;
   solution: string;
   results: string;
+  features?: string[];
+  whyItMatters?: string;
 }
 
 export const projects: Project[] = [
@@ -24,14 +28,24 @@ export const projects: Project[] = [
   },
   {
     slug: "skyindia-crm",
-    title: "SkyIndia Mattress – Calculator & CRM App",
-    description: "Custom pricing calculator and customer relationship management system",
-    image: "/placeholder.svg",
+    title: "SkyIndia Mattress — Calculator & CRM App",
+    description: "Custom pricing calculator and internal customer relationship management system",
+    image: skyindiaCrmImage,
     category: "Business Tools",
     techStack: ["React", "Firebase", "Firestore", "Cloud Functions"],
-    challenge: "The sales team needed a streamlined way to calculate custom mattress pricing and manage customer relationships without switching between multiple tools.",
-    solution: "Developed an integrated app combining a dynamic pricing calculator with CRM functionality, featuring real-time sync and role-based access control.",
-    results: "Reduced pricing errors by 90% and improved sales team efficiency with centralized customer data."
+    challenge: "The in-store sales team relied on manual calculations and disconnected tools to handle pricing, inventory tracking, and customer records.\n\nThis made custom pricing error-prone, slowed down sales workflows, and made it difficult to maintain a single source of truth across staff devices.",
+    solution: "Designed and built a centralized in-store application that combines dynamic pricing logic, sales tracking, inventory visibility, and CRM functionality into a single system.\n\nThe app synchronizes data in real time across devices and supports role-based access, allowing staff to work collaboratively while maintaining data consistency.",
+    results: "The system significantly reduced manual errors, improved pricing accuracy, and streamlined day-to-day in-store operations.\n\nStaff were able to collaborate more efficiently using a shared, synchronized data source, reducing operational overhead and improving overall sales efficiency.",
+    features: [
+      "Real-time sales recording and tracking",
+      "Inventory movement and stock visibility",
+      "Cost, margin, and profitability calculations",
+      "Built-in customer relationship management",
+      "Quotation generation and warranty record handling",
+      "Multi-device synchronization",
+      "Role-based access for staff and managers"
+    ],
+    whyItMatters: "This project focused on translating real-world store workflows into a reliable internal system. The goal was not to build a generic app, but to create a practical tool that staff could rely on during daily operations."
   },
   {
     slug: "instagram-analytics",

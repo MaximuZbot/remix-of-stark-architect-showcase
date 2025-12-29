@@ -92,24 +92,53 @@ const ProjectDetail = () => {
           <div className="max-w-4xl mx-auto space-y-20">
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">THE CHALLENGE</h2>
-              <p className="text-2xl font-light text-architectural leading-relaxed">
-                {project.challenge}
-              </p>
+              <div className="text-2xl font-light text-architectural leading-relaxed space-y-4">
+                {project.challenge.split('\n\n').map((paragraph, i) => (
+                  <p key={i}>{paragraph}</p>
+                ))}
+              </div>
             </div>
             
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">THE SOLUTION</h2>
-              <p className="text-2xl font-light text-architectural leading-relaxed">
-                {project.solution}
-              </p>
+              <div className="text-2xl font-light text-architectural leading-relaxed space-y-4">
+                {project.solution.split('\n\n').map((paragraph, i) => (
+                  <p key={i}>{paragraph}</p>
+                ))}
+              </div>
             </div>
+
+            {project.features && project.features.length > 0 && (
+              <div>
+                <h2 className="text-minimal text-muted-foreground mb-6">KEY CAPABILITIES</h2>
+                <ul className="grid md:grid-cols-2 gap-4">
+                  {project.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="w-1.5 h-1.5 bg-foreground rounded-full mt-3 flex-shrink-0" />
+                      <span className="text-lg text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">THE RESULTS</h2>
-              <p className="text-2xl font-light text-architectural leading-relaxed">
-                {project.results}
-              </p>
+              <div className="text-2xl font-light text-architectural leading-relaxed space-y-4">
+                {project.results.split('\n\n').map((paragraph, i) => (
+                  <p key={i}>{paragraph}</p>
+                ))}
+              </div>
             </div>
+
+            {project.whyItMatters && (
+              <div>
+                <h2 className="text-minimal text-muted-foreground mb-4">WHY THIS PROJECT MATTERS</h2>
+                <p className="text-2xl font-light text-architectural leading-relaxed">
+                  {project.whyItMatters}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
