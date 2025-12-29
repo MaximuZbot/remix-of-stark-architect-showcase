@@ -110,7 +110,9 @@ const ProjectDetail = () => {
 
             {project.features && project.features.length > 0 && (
               <div>
-                <h2 className="text-minimal text-muted-foreground mb-6">KEY CAPABILITIES</h2>
+                <h2 className="text-minimal text-muted-foreground mb-6">
+                  {project.slug === "instagram-analytics" ? "WHAT THE SYSTEM DOES" : "KEY CAPABILITIES"}
+                </h2>
                 <ul className="grid md:grid-cols-2 gap-4">
                   {project.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3">

@@ -1,4 +1,5 @@
 import skyindiaCrmImage from "@/assets/project-skyindia-crm.png";
+import instagramAnalyticsImage from "@/assets/project-instagram-analytics.png";
 
 export interface Project {
   slug: string;
@@ -50,13 +51,20 @@ export const projects: Project[] = [
   {
     slug: "instagram-analytics",
     title: "Instagram Analytics Automation Tool",
-    description: "Automated data extraction and analytics pipeline for Instagram insights",
-    image: "/placeholder.svg",
+    description: "Automated computer vision pipeline for extracting engagement data from Instagram screenshots",
+    image: instagramAnalyticsImage,
     category: "Automation",
-    techStack: ["Python", "Selenium", "Pandas", "Google Sheets API"],
-    challenge: "Manual extraction of Instagram analytics was time-consuming and prone to errors, making it difficult to track performance trends.",
-    solution: "Created an automated pipeline that extracts engagement metrics, processes the data, and generates comprehensive reports with trend analysis.",
-    results: "Saved 10+ hours weekly on manual data entry and enabled data-driven content decisions."
+    techStack: ["Python", "YOLO (custom-trained)", "OpenCV", "Pandas", "Google Drive", "Google Sheets API", "RunPod (GPU)"],
+    challenge: "Manually extracting engagement metrics from Instagram screenshots was slow, repetitive, and prone to errors, especially when working with large volumes of data.",
+    solution: "Built an automated system that processes Instagram screenshots in bulk and extracts engagement metrics directly from images using a custom-trained YOLO model.\n\nThe pipeline removes the need for manual data entry or platform APIs by relying entirely on visual analysis.",
+    results: "The tool significantly reduced manual effort and enabled faster analysis of historical engagement data.\n\nTeams were able to make data-informed decisions using structured outputs generated directly from visual inputs.",
+    features: [
+      "Accepts screenshots via drag-and-drop or Google Drive links",
+      "Processes hundreds or thousands of images in batches",
+      "Detects likes, comments, and shares using computer vision",
+      "Structures the extracted data automatically",
+      "Outputs results with references to the original images"
+    ]
   },
   {
     slug: "ocr-pipeline",
