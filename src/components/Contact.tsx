@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import bgContact from "@/assets/bg-contact.png";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -46,8 +47,18 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-32 bg-background">
-      <div className="container mx-auto px-6">
+    <section id="contact" className="relative py-32 overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url(${bgContact})` }}
+      />
+      
+      {/* Dark Overlay with blue tint */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-primary/10" />
+      
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-20">
             <div 
@@ -56,37 +67,37 @@ const Contact = () => {
                 leftVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <h2 className="text-minimal text-muted-foreground mb-4">GET IN TOUCH</h2>
-              <h3 className="text-4xl md:text-6xl font-light text-architectural mb-12">
+              <h2 className="text-minimal text-white/60 mb-4">GET IN TOUCH</h2>
+              <h3 className="text-4xl md:text-6xl font-light text-white mb-12">
                 Let's Build
                 <br />
                 Something Together
               </h3>
               
               <div className="space-y-8">
-                <div>
-                  <h4 className="text-minimal text-muted-foreground mb-2">LOCATION</h4>
-                  <address className="text-xl not-italic">
+                <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6">
+                  <h4 className="text-minimal text-white/60 mb-2">LOCATION</h4>
+                  <address className="text-xl text-white not-italic">
                     Kochi & Bangalore
                     <br />
                     India
                   </address>
                 </div>
                 
-                <div>
-                  <h4 className="text-minimal text-muted-foreground mb-2">AVAILABILITY</h4>
-                  <p className="text-xl">
+                <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6">
+                  <h4 className="text-minimal text-white/60 mb-2">AVAILABILITY</h4>
+                  <p className="text-xl text-white">
                     Available for freelance, startups, and full-time roles
                   </p>
                 </div>
 
-                <div>
-                  <h4 className="text-minimal text-muted-foreground mb-6">CONNECT</h4>
+                <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6">
+                  <h4 className="text-minimal text-white/60 mb-4">CONNECT</h4>
                   <a 
                     href="https://www.linkedin.com/in/mohithkanna" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center text-xl hover:text-muted-foreground transition-colors duration-300"
+                    className="flex items-center text-xl text-white hover:text-white/80 transition-colors duration-300"
                   >
                     <Linkedin className="w-5 h-5 mr-3" />
                     LinkedIn
@@ -101,78 +112,80 @@ const Contact = () => {
                 rightVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <h4 className="text-minimal text-muted-foreground mb-6">SEND A MESSAGE</h4>
+              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-8">
+                <h4 className="text-minimal text-white/60 mb-6">SEND A MESSAGE</h4>
+                
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      {...register("name")}
+                      className="w-full px-0 py-4 bg-transparent border-b border-white/20 focus:border-white text-white outline-none transition-colors placeholder:text-white/40"
+                    />
+                    {errors.name && (
+                      <p className="text-sm text-red-400 mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Your Email"
+                      {...register("email")}
+                      className="w-full px-0 py-4 bg-transparent border-b border-white/20 focus:border-white text-white outline-none transition-colors placeholder:text-white/40"
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-400 mt-1">{errors.email.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Subject"
+                      {...register("subject")}
+                      className="w-full px-0 py-4 bg-transparent border-b border-white/20 focus:border-white text-white outline-none transition-colors placeholder:text-white/40"
+                    />
+                    {errors.subject && (
+                      <p className="text-sm text-red-400 mt-1">{errors.subject.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <textarea
+                      placeholder="Your Message"
+                      rows={4}
+                      {...register("message")}
+                      className="w-full px-0 py-4 bg-transparent border-b border-white/20 focus:border-white text-white outline-none transition-colors resize-none placeholder:text-white/40"
+                    />
+                    {errors.message && (
+                      <p className="text-sm text-red-400 mt-1">{errors.message.message}</p>
+                    )}
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center px-8 py-4 border border-white bg-white text-background hover:bg-transparent hover:text-white transition-colors duration-300 disabled:opacity-50 rounded-lg"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <Send className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
               
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    {...register("name")}
-                    className="w-full px-0 py-4 bg-transparent border-b border-border focus:border-foreground outline-none transition-colors placeholder:text-muted-foreground/50"
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <input
-                    type="email"
-                    placeholder="Your Email"
-                    {...register("email")}
-                    className="w-full px-0 py-4 bg-transparent border-b border-border focus:border-foreground outline-none transition-colors placeholder:text-muted-foreground/50"
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Subject"
-                    {...register("subject")}
-                    className="w-full px-0 py-4 bg-transparent border-b border-border focus:border-foreground outline-none transition-colors placeholder:text-muted-foreground/50"
-                  />
-                  {errors.subject && (
-                    <p className="text-sm text-destructive mt-1">{errors.subject.message}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <textarea
-                    placeholder="Your Message"
-                    rows={4}
-                    {...register("message")}
-                    className="w-full px-0 py-4 bg-transparent border-b border-border focus:border-foreground outline-none transition-colors resize-none placeholder:text-muted-foreground/50"
-                  />
-                  {errors.message && (
-                    <p className="text-sm text-destructive mt-1">{errors.message.message}</p>
-                  )}
-                </div>
-                
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center px-8 py-4 border border-foreground bg-foreground text-background hover:bg-transparent hover:text-foreground transition-colors duration-300 disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      Send Message
-                      <Send className="w-4 h-4 ml-2" />
-                    </>
-                  )}
-                </button>
-              </form>
-              
-              <div className="pt-12 mt-12 border-t border-border">
-                <p className="text-muted-foreground">
+              <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6 mt-8">
+                <p className="text-white/70">
                   I approach each project with a focus on speed, clarity, and production-ready delivery. 
                   Whether you need an AI system, a full-stack app, or automation tools—I build to ship.
                 </p>
