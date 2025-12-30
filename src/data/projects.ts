@@ -1,5 +1,9 @@
 import skyindiaCrmImage from "@/assets/project-skyindia-crm.png";
 import instagramAnalyticsImage from "@/assets/project-instagram-analytics.png";
+import skyindiaWebsiteImage from "@/assets/project-skyindia-website.png";
+import businessAutomationImage from "@/assets/project-business-automation.png";
+import roleDashboardImage from "@/assets/project-role-dashboard.png";
+import webToApkImage from "@/assets/project-web-to-apk.png";
 
 export interface Project {
   slug: string;
@@ -20,7 +24,7 @@ export const projects: Project[] = [
     slug: "skyindia-website",
     title: "SkyIndia Mattress – Website",
     description: "Full company website with product catalog and brand identity",
-    image: "/placeholder.svg",
+    image: skyindiaWebsiteImage,
     category: "Web Development",
     techStack: ["React", "Tailwind CSS", "Firebase Hosting"],
     challenge: "SkyIndia Mattress needed a modern online presence that showcased their product range while maintaining brand consistency across all touchpoints.",
@@ -92,7 +96,7 @@ export const projects: Project[] = [
     slug: "business-automation",
     title: "Internal Business Automation Tools",
     description: "Suite of automation scripts replacing manual business workflows",
-    image: "/placeholder.svg",
+    image: businessAutomationImage,
     category: "Automation",
     techStack: ["Python", "Google APIs", "Selenium", "cron"],
     challenge: "Repetitive manual tasks were consuming significant employee time and introducing human errors in critical business processes.",
@@ -103,7 +107,7 @@ export const projects: Project[] = [
     slug: "role-based-dashboard",
     title: "Role-Based Business Dashboard",
     description: "Multi-role dashboard with Firebase auth and real-time data sync",
-    image: "/placeholder.svg",
+    image: roleDashboardImage,
     category: "Web Development",
     techStack: ["React", "Firebase Auth", "Firestore", "Tailwind CSS"],
     challenge: "Different team roles needed access to different data views and actions, requiring a flexible permission system.",
@@ -114,7 +118,7 @@ export const projects: Project[] = [
     slug: "web-to-apk",
     title: "End-to-End App Delivery (Web → APK)",
     description: "Complete app development from web prototype to production APK",
-    image: "/placeholder.svg",
+    image: webToApkImage,
     category: "Mobile Development",
     techStack: ["React", "Capacitor", "Android Studio", "Firebase"],
     challenge: "Client needed a mobile app but wanted to leverage web development speed and cross-platform capabilities.",
