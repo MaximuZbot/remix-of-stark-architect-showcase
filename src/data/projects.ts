@@ -4,6 +4,8 @@ import skyindiaWebsiteImage from "@/assets/project-skyindia-website.png";
 import businessAutomationImage from "@/assets/project-business-automation.png";
 import roleDashboardImage from "@/assets/project-role-dashboard.png";
 import webToApkImage from "@/assets/project-web-to-apk.png";
+import ocrPipelineImage from "@/assets/project-ocr-pipeline.png";
+import yoloDetectionImage from "@/assets/project-yolo-detection.png";
 
 export interface Project {
   slug: string;
@@ -74,7 +76,7 @@ export const projects: Project[] = [
     slug: "ocr-pipeline",
     title: "Screenshot-to-Data OCR Pipeline",
     description: "End-to-end OCR system converting screenshots into structured data",
-    image: "/placeholder.svg",
+    image: ocrPipelineImage,
     category: "Computer Vision",
     techStack: ["Python", "Tesseract OCR", "OpenCV", "Pandas"],
     challenge: "Business data trapped in screenshots and images needed to be converted to usable structured formats for analysis.",
@@ -85,7 +87,7 @@ export const projects: Project[] = [
     slug: "yolo-detection",
     title: "Custom YOLO Object Detection System",
     description: "Trained YOLOv8 models for domain-specific object detection tasks",
-    image: "/placeholder.svg",
+    image: yoloDetectionImage,
     category: "Computer Vision",
     techStack: ["Python", "YOLOv8", "OpenCV", "PyTorch"],
     challenge: "Standard object detection models weren't accurate enough for specialized industrial use cases requiring custom object recognition.",
