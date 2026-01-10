@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Linkedin } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-architecture.jpg";
 import heroMobileImage from "@/assets/hero-mobile.webp";
 const Hero = () => {
@@ -45,7 +46,7 @@ const Hero = () => {
         {/* CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 reveal-delayed">
           <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
-            <a href="#projects">View Projects</a>
+            <Link to="/projects">View Projects</Link>
           </Button>
           <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
             <a href="#contact">Work With Me</a>
