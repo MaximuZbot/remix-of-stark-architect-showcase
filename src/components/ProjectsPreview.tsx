@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const Projects = () => {
+const ProjectsPreview = () => {
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  
+  // Show only first 4 projects as preview
+  const featuredProjects = projects.slice(0, 4);
 
   return (
     <section id="projects" className="py-32 bg-muted">
@@ -11,20 +14,38 @@ const Projects = () => {
         <div className="max-w-7xl mx-auto">
           <div 
             ref={headerRef}
-            className={`mb-20 transition-all duration-700 ${
+            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-20 transition-all duration-700 ${
               headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <h2 className="text-minimal text-muted-foreground mb-4">SELECTED WORK</h2>
-            <h3 className="text-4xl md:text-6xl font-light text-architectural">
-              Projects
-            </h3>
+            <div>
+              <h2 className="text-minimal text-muted-foreground mb-4">SELECTED WORK</h2>
+              <h3 className="text-4xl md:text-6xl font-light text-architectural">
+                Projects
+              </h3>
+            </div>
+            <Link 
+              to="/projects"
+              className="text-minimal text-muted-foreground hover:text-foreground transition-colors mt-6 md:mt-0"
+            >
+              VIEW ALL →
+            </Link>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8">
-            {projects.map((project, index) => (
+            {featuredProjects.map((project, index) => (
               <ProjectCard key={project.slug} project={project} index={index} />
             ))}
+          </div>
+          
+          {/* CTA to see more */}
+          <div className="text-center mt-16">
+            <Link 
+              to="/projects"
+              className="inline-block px-8 py-4 border border-border hover:border-foreground/20 text-minimal transition-colors"
+            >
+              EXPLORE ALL PROJECTS
+            </Link>
           </div>
         </div>
       </div>
@@ -73,4 +94,4 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
   );
 };
 
-export default Projects;
+export default ProjectsPreview;
