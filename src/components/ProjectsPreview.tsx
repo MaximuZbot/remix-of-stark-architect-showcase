@@ -14,7 +14,7 @@ const ProjectsPreview = () => {
         <div className="max-w-7xl mx-auto">
           <div 
             ref={headerRef}
-            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-20 transition-all duration-700 ${
+            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-16 transition-all duration-700 ${
               headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
@@ -32,9 +32,10 @@ const ProjectsPreview = () => {
             </Link>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          {/* Project List */}
+          <div className="border-t border-border">
             {featuredProjects.map((project, index) => (
-              <ProjectCard key={project.slug} project={project} index={index} />
+              <ProjectListItem key={project.slug} project={project} index={index} />
             ))}
           </div>
           
@@ -53,43 +54,32 @@ const ProjectsPreview = () => {
   );
 };
 
-const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
+const ProjectListItem = ({ project, index }: { project: typeof projects[0]; index: number }) => {
   const { ref, isVisible } = useScrollAnimation<HTMLAnchorElement>({ threshold: 0.1 });
   
   return (
     <Link 
       to={`/project/${project.slug}`}
       ref={ref}
-      className={`group block bg-background border border-border hover:border-foreground/20 transition-all duration-500 overflow-hidden ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      className={`group flex items-center justify-between py-6 border-b border-border hover:bg-background/50 transition-all duration-500 px-4 -mx-4 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
-      style={{ transitionDelay: `${(index % 4) * 100}ms` }}
+      style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="aspect-[16/10] overflow-hidden bg-muted">
-        <img 
-          src={project.image} 
-          alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+      <div className="flex items-center gap-6 md:gap-12 flex-1 min-w-0">
+        <span className="text-minimal text-muted-foreground font-medium w-8 shrink-0">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <span className="text-xs text-muted-foreground uppercase tracking-wider w-32 shrink-0 hidden md:block">
+          {project.category}
+        </span>
+        <h4 className="text-lg md:text-xl font-light text-foreground group-hover:text-muted-foreground transition-colors duration-300 truncate">
+          {project.title}
+        </h4>
       </div>
-      <div className="p-8">
-        <div className="flex items-start space-x-4">
-          <span className="text-minimal text-muted-foreground font-medium">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          <div>
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              {project.category}
-            </span>
-            <h4 className="text-xl font-light text-architectural mb-3 group-hover:text-muted-foreground transition-colors duration-500">
-              {project.title}
-            </h4>
-            <p className="text-muted-foreground leading-relaxed">
-              {project.description}
-            </p>
-          </div>
-        </div>
-      </div>
+      <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300 ml-4">
+        →
+      </span>
     </Link>
   );
 };
