@@ -1,7 +1,7 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Linkedin } from "lucide-react";
 import { useState, useEffect } from "react";
-import heroImage from "@/assets/hero-architecture.jpg";
 import heroMobileImage from "@/assets/hero-mobile.webp";
 
 const Hero = () => {
@@ -57,7 +57,7 @@ const Hero = () => {
             className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm"
             asChild
           >
-            <a href="#projects">View Projects</a>
+            <Link to="/projects">View Projects</Link>
           </Button>
           <Button 
             variant="outline" 

@@ -37,7 +37,7 @@ const ProjectDetail = () => {
         >
           <div className="max-w-7xl mx-auto">
             <Link 
-              to="/#projects" 
+              to="/projects" 
               className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
