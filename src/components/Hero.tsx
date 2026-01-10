@@ -6,15 +6,9 @@ import heroMobileImage from "@/assets/hero-mobile.webp";
 const Hero = () => {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image - Desktop */}
+      {/* Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden md:block"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      />
-      
-      {/* Background Image - Mobile (shows right side of image) */}
-      <div 
-        className="absolute inset-0 bg-cover bg-no-repeat md:hidden"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{ 
           backgroundImage: `url(${heroMobileImage})`,
           backgroundPosition: 'right center'
