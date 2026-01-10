@@ -44,12 +44,12 @@ const Capabilities = () => {
             }`}
           >
             <h2 className="text-minimal text-muted-foreground mb-4">CAPABILITIES</h2>
-            <h3 className="text-4xl md:text-6xl font-light text-architectural">
+            <h3 className="text-6xl font-light text-architectural">
               What I Build
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-x-16 gap-y-16">
+          <div className="grid grid-cols-3 gap-x-16 gap-y-16">
             {capabilities.map((capability, index) => (
               <CapabilityCard key={index} capability={capability} index={index} />
             ))}

@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="bg-card border-t border-border py-12">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {/* Brand */}
           <div>
             <h3 className="text-minimal text-foreground mb-4">MOHITH KANNA</h3>

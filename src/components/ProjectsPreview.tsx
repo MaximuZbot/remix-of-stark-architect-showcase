@@ -14,19 +14,19 @@ const ProjectsPreview = () => {
         <div className="max-w-7xl mx-auto">
           <div 
             ref={headerRef}
-            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-12 transition-all duration-700 ${
+            className={`flex justify-between items-end mb-12 transition-all duration-700 ${
               headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <div>
               <h2 className="text-minimal text-muted-foreground mb-4">SELECTED WORK</h2>
-              <h3 className="text-4xl md:text-6xl font-light text-architectural">
+              <h3 className="text-6xl font-light text-architectural">
                 Projects
               </h3>
             </div>
             <Link 
               to="/projects"
-              className="text-minimal text-muted-foreground hover:text-foreground transition-colors mt-6 md:mt-0"
+              className="text-minimal text-muted-foreground hover:text-foreground transition-colors"
             >
               VIEW ALL →
             </Link>
@@ -56,14 +56,14 @@ const ProjectListItem = ({ project, index }: { project: typeof projects[0]; inde
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="flex items-center gap-6 md:gap-12 flex-1 min-w-0">
+      <div className="flex items-center gap-12 flex-1 min-w-0">
         <span className="text-minimal text-muted-foreground font-medium w-8 shrink-0">
           {String(index + 1).padStart(2, '0')}
         </span>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider w-32 shrink-0 hidden md:block">
+        <span className="text-xs text-muted-foreground uppercase tracking-wider w-32 shrink-0">
           {project.category}
         </span>
-        <h4 className="text-lg md:text-xl font-light text-foreground group-hover:text-muted-foreground transition-colors duration-300 truncate">
+        <h4 className="text-xl font-light text-foreground group-hover:text-muted-foreground transition-colors duration-300 truncate">
           {project.title}
         </h4>
       </div>
