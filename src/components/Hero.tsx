@@ -1,44 +1,37 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Linkedin } from "lucide-react";
 import { useState, useEffect } from "react";
+import heroImage from "@/assets/hero-architecture.jpg";
 import heroMobileImage from "@/assets/hero-mobile.webp";
-
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
-
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true
+    });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Calculate fade-out opacity (starts fading at 100px, fully faded at 400px)
   const contentOpacity = Math.max(0, 1 - scrollY / 400);
-
-  return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+  return <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax */}
-      <div 
-        className="absolute inset-0 bg-cover bg-no-repeat"
-        style={{ 
-          backgroundImage: `url(${heroMobileImage})`,
-          backgroundPosition: 'right center',
-          transform: `translateY(${scrollY * 0.3}px) scale(1.1)`
-        }}
-      />
+      <div className="absolute inset-0 bg-cover bg-no-repeat" style={{
+      backgroundImage: `url(${heroMobileImage})`,
+      backgroundPosition: 'right center',
+      transform: `translateY(${scrollY * 0.3}px) scale(1.1)`
+    }} />
       
       {/* Overlay */}
       <div className="absolute inset-0 hero-overlay" />
       
       {/* Content with Fade Effect */}
-      <div 
-        className="relative z-10 text-center max-w-4xl mx-auto px-6 transition-opacity duration-100"
-        style={{ opacity: contentOpacity }}
-      >
+      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 transition-opacity duration-100" style={{
+      opacity: contentOpacity
+    }}>
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white text-architectural mb-4 reveal">
           MOHITH KANNA
         </h1>
@@ -51,28 +44,13 @@ const Hero = () => {
         
         {/* CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 reveal-delayed">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm"
-            asChild
-          >
-            <Link to="/projects">View Projects</Link>
+          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
+            <a href="#projects">View Projects</a>
           </Button>
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm"
-            asChild
-          >
+          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
             <a href="#contact">Work With Me</a>
           </Button>
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm"
-            asChild
-          >
+          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
             <a href="https://www.linkedin.com/in/mohithkanna" target="_blank" rel="noopener noreferrer">
               <Linkedin className="w-4 h-4 mr-2" />
               LinkedIn
@@ -82,14 +60,7 @@ const Hero = () => {
       </div>
       
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 reveal-delayed">
-        <div className="w-px h-16 bg-white/40" />
-        <div className="text-minimal text-white/60 mt-4 rotate-90 origin-center">
-          SCROLL
-        </div>
-      </div>
-    </section>
-  );
+      
+    </section>;
 };
-
 export default Hero;
