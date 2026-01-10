@@ -24,6 +24,13 @@ const Projects = () => {
               headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 text-minimal text-muted-foreground hover:text-foreground transition-colors mb-8"
+            >
+              <span>←</span>
+              <span>BACK</span>
+            </Link>
             <h1 className="text-minimal text-muted-foreground mb-4">SELECTED WORK</h1>
             <h2 className="text-4xl md:text-6xl font-light text-architectural">
               All Projects
