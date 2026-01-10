@@ -16,23 +16,29 @@ const Hero = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Calculate fade-out opacity (starts fading at 100px, fully faded at 400px)
+  const contentOpacity = Math.max(0, 1 - scrollY / 400);
+
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax */}
       <div 
-        className="absolute inset-0 bg-cover bg-no-repeat transition-transform duration-100 ease-out"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{ 
           backgroundImage: `url(${heroMobileImage})`,
           backgroundPosition: 'right center',
-          transform: `translateY(${scrollY * 0.4}px) scale(1.1)`
+          transform: `translateY(${scrollY * 0.3}px) scale(1.1)`
         }}
       />
       
       {/* Overlay */}
       <div className="absolute inset-0 hero-overlay" />
       
-      {/* Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
+      {/* Content with Fade Effect */}
+      <div 
+        className="relative z-10 text-center max-w-4xl mx-auto px-6 transition-opacity duration-100"
+        style={{ opacity: contentOpacity }}
+      >
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white text-architectural mb-4 reveal">
           MOHITH KANNA
         </h1>
