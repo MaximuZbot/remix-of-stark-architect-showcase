@@ -9,12 +9,12 @@ const ProjectsPreview = () => {
   const featuredProjects = projects.slice(0, 4);
 
   return (
-    <section id="projects" className="py-32 bg-muted">
+    <section id="projects" className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
           <div 
             ref={headerRef}
-            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-16 transition-all duration-700 ${
+            className={`flex flex-col md:flex-row md:justify-between md:items-end mb-12 transition-all duration-700 ${
               headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
@@ -37,16 +37,6 @@ const ProjectsPreview = () => {
             {featuredProjects.map((project, index) => (
               <ProjectListItem key={project.slug} project={project} index={index} />
             ))}
-          </div>
-          
-          {/* CTA to see more */}
-          <div className="text-center mt-16">
-            <Link 
-              to="/projects"
-              className="inline-block px-8 py-4 border border-border hover:border-foreground/20 text-minimal transition-colors"
-            >
-              EXPLORE ALL PROJECTS
-            </Link>
           </div>
         </div>
       </div>
