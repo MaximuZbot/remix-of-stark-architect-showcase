@@ -6,6 +6,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -49,19 +51,19 @@ const Navigation = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-background border-b border-border">
           <div className="container mx-auto px-6 py-6 space-y-4">
-            <Link to="/projects" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <Link to="/projects" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               PROJECTS
             </Link>
-            <a href="#capabilities" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#capabilities" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CAPABILITIES
             </a>
-            <a href="#about" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#about" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               ABOUT
             </a>
-            <a href="#tech" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#tech" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               TECH
             </a>
-            <a href="#contact" className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <a href="#contact" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CONTACT
             </a>
             

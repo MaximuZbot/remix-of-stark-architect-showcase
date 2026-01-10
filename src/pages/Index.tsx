@@ -6,6 +6,7 @@ import ProjectsPreview from "@/components/ProjectsPreview";
 import CurrentlyBuilding from "@/components/CurrentlyBuilding";
 import TechStack from "@/components/TechStack";
 import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
       <CurrentlyBuilding />
       <TechStack />
       <Contact />
+      <Footer />
     </div>
   );
 };
