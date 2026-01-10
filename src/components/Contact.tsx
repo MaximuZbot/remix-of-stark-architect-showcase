@@ -60,7 +60,7 @@ const Contact = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 gap-20">
+          <div className="grid md:grid-cols-2 gap-20">
             <div 
               ref={leftRef}
               className={`transition-all duration-700 ${
@@ -68,7 +68,7 @@ const Contact = () => {
               }`}
             >
               <h2 className="text-minimal text-white/60 mb-4">GET IN TOUCH</h2>
-              <h3 className="text-6xl font-light text-white mb-12">
+              <h3 className="text-4xl md:text-6xl font-light text-white mb-12">
                 Let's Build
                 <br />
                 Something Together
