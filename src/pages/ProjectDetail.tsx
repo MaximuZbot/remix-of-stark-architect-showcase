@@ -23,6 +23,19 @@ const ProjectDetail = () => {
     return null;
   }
 
+  const relatedSlugs = Array.from(
+    new Set([
+      ...(project.builtFrom ?? []),
+      ...(project.usedBy ? [project.usedBy] : []),
+      ...(project.relatedSlugs ?? []),
+    ]),
+  );
+  const relatedProjects = relatedSlugs
+    .map(getProjectBySlug)
+    .filter((p): p is Project => Boolean(p));
+
+
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
