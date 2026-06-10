@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Navigation from "@/components/Navigation";
-import { projects } from "@/data/projects";
+import { projects, Project, getProjectBySlug } from "@/data/projects";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const ProjectDetail = () => {
