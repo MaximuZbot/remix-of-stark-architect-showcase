@@ -5,7 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import RobotEyes from "@/components/RobotEyes";
 import bgContact from "@/assets/bg-contact.png";
+
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
