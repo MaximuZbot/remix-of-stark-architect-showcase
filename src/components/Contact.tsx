@@ -105,7 +105,7 @@ const Contact = () => {
 
               {/* Robot Companion */}
               <div className="mt-12 pl-2">
-                <RobotEyes className="w-40 h-40 md:w-48 md:h-48" />
+                <RobotEyes className="w-32 h-32 md:w-40 md:h-40" />
               </div>
             </div>
 
