@@ -196,7 +196,9 @@ const Contact = () => {
                   Whether you need an AI system, a full-stack app, or automation tools—I build to ship.
                 </p>
               </div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
