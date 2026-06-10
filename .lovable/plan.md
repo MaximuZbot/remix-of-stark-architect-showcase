@@ -1,72 +1,50 @@
-# Projects Page Strategic Redesign
+# Contact Section Robot Upgrade
 
-Reorganize `/projects` from a flat list of equal cards into a story with three weighted tiers. Live, shipped websites become the hero. No raw URLs anywhere — only "Visit Website" buttons. Technical systems get a connected case-study treatment showing how the OCR pipeline powers the Instagram tool.
+Upgrade the home-page contact section (`src/components/Contact.tsx`) so a small CRT-screen robot from the same world as the hero sits in the lower-left, watching the cursor. Rebalance the layout around it. No redesign of typography, colors, or aesthetic — only the robot integration and layout rebalance.
 
-## Narrative & Hierarchy
+## 1. Add the robot asset
 
-```text
-SELECTED WORK
-─────────────────────────────────────────
-01  LIVE WEBSITES            ← largest, full-width feature cards
-       SkyIndia · ThinkXYZ · Mew Layer Labs · Philono
+- Register the uploaded robot head (`user-uploads://newhead.png`) as an app asset under `src/assets/` (e.g. `robot-head.png`) so it can be imported. The uploaded PNG is used exactly as-is — no regeneration, recolor, or restyle.
 
-02  PROTOTYPES & CONCEPTS    ← compact, lower-emphasis cards
-       School Website · SunVerge · Mentra
+## 2. New `RobotEyes` component
 
-03  AI, AUTOMATION & COMPUTER VISION   ← technical case-study cards
-       Instagram Analytics ──built from──► OCR Pipeline (Core Tech)
-                          └─related website─► Philono
-       Custom YOLO Detection      (independent)
-       Internal Business Automation Tools (independent)
-       SkyIndia CRM App · Role-Based Dashboard · Web→APK (folded in here)
-```
+Create `src/components/RobotEyes.tsx` — a self-contained React + canvas port of the provided eye-system code:
 
-## Data Model Changes (`src/data/projects.ts`)
+- Container `div` with the robot head `<img>` plus an overlaid `<canvas>` positioned over the black CRT screen (top ~31.5%, left ~20.5%, width ~59%, height ~44.5%, `mix-blend-mode: screen`).
+- Canvas logic ported into a `useEffect` (with proper cleanup of listeners and `requestAnimationFrame`):
+  - LED pixel-matrix rendering, glowing cyan (`#26ffff` / shadow `#00f3ff`) on a faint dark grid.
+  - Spring-physics pupil tracking that follows the global cursor, mapped into canvas space.
+  - Head-drift: whole eye system bouncily sways a few px toward the cursor.
+  - Random blinking every ~3–8s with occasional double blink, plus the squish animation.
+  - DPR-aware sizing and a resize handler.
+- Add subtle **idle breathing** (tiny vertical float + sway) via a CSS animation on the container so it never feels static.
+- Sizing via a `className`/prop so it can scale down on mobile.
 
-Extend the `Project` interface with optional fields and a `tier`:
-- `tier: "live" | "prototype" | "system"` — drives which section renders the card.
-- `liveUrl?: string` — external link for the "Visit Website" button (never shown as text).
-- `status?: string` — short label e.g. "Live Production Website", "Concept Website", "Core Technology".
-- `relatedSlugs?: string[]` — for the OCR ↔ Instagram ↔ Philono relationships.
-- `usedBy?: string` / `builtFrom?: string[]` — relationship copy for system cards.
+## 3. Rework `Contact.tsx` layout
 
-Add new entries (live + prototype) with concise challenge/solution/results so their detail pages work:
-- `skyindia-website` → tier live, url `https://skyindiamattress.in/`
-- `thinkxyz` (Think XYZ Prints) → live, `https://thinkxyz.in/`
-- `mewlayer-labs` → live, `https://mewlayerlabs.netlify.app/`
-- `philono` → live, `https://philono.netlify.app/` (also referenced by the Instagram tool)
-- `school-website` → prototype, `https://schoolwebsitev10.netlify.app/`
-- `sunverge` → prototype, `https://sunverge.netlify.app/`
-- `mentra` → prototype, `https://mentra-professional-lv26.bolt.host`
+Left column changes:
+- **Remove** the entire `CONNECT` / LinkedIn card.
+- **Merge** the LinkedIn link into the `AVAILABILITY` card so it reads:
+  - `AVAILABILITY`
+  - `Available for freelance, startups, and full-time roles`
+  - LinkedIn link (same icon + URL, styled to match the card).
+- Place the `RobotEyes` component in the freed bottom-left region — aligned with the info cards, slightly floating above the bottom edge, becoming the visual focal point of that area (not the hero, which is untouched).
 
-Update existing entries: tag `instagram-analytics`, `ocr-pipeline`, `yolo-detection`, `business-automation`, `skyindia-crm`, `role-based-dashboard`, `web-to-apk` as tier `system`. Add relationship metadata: OCR pipeline `usedBy: instagram-analytics` + `status: "Core Technology"`; Instagram `builtFrom: [ocr-pipeline, ...]` + `relatedSlugs: [philono]`.
+Right column changes:
+- Reduce the "Send a Message" glass card's visual weight ~15% (e.g. constrain its max-width and/or reduce padding/scale), keeping all fields, functionality, and styling intact.
 
-## Imagery
+## 4. Mobile behavior
 
-- **Live + prototype cards:** capture real screenshots from each live site (via the website-fetch/screenshot tool) and save to `src/assets/`. These replace generic renders for shipped work.
-- **Technical systems:** generate clean schematic graphics (workflow diagram, OCR input→structured-output, detection overlay, automation flow) to replace the purple monitor renders. Style: minimal, monochrome to match the black/white design system — not marketing art.
+- Robot stays visible, scaled down (smaller fixed size at `sm`/below), keeps blinking and eye tracking.
+- Ensure it never overlaps the form or pushes content off-screen — stacking/layout cleanliness prioritized over robot size.
 
-## Page Rebuild (`src/pages/Projects.tsx`)
+## Technical notes
 
-Replace the single uniform grid with three distinct section components, each with its own visual weight:
+- Mouse tracking uses `window` mousemove mapped through `canvas.getBoundingClientRect()` so tracking works regardless of scroll position.
+- All animation/timer/listener resources are cleaned up on unmount to avoid leaks.
+- Cyan glow, worn-metal CRT look, and cyberpunk mood come entirely from the uploaded asset + cyan LEDs — no new colors introduced into the design system.
 
-1. **LiveWebsiteCard** — full-width (or large 2-up) feature cards: big screenshot, title, `status` chip, short capability blurb, and a prominent **Visit Website →** button (`<a target="_blank" rel="noopener noreferrer">`). Card body still links to the detail page; the button stops propagation and opens the external site. Hover reveals the CTA.
-2. **PrototypeCard** — compact 3-up grid, smaller imagery, muted styling, label like "Client Concept" / "Concept Website" / "Personal Product Exploration". Visit Website button present but understated.
-3. **SystemCard** — case-study style card (no fake marketing photo; uses generated diagram). Shows relationship rows: "Built from →", "Core Technology · Used by →", "Related Website →" rendered as small linked pills to the related project/site. YOLO, Automation, CRM, Dashboard, Web→APK render as standalone system cards without relationship rows.
+## Out of scope
 
-Keep the existing `← BACK` link, `Navigation`, scroll animations, and the section header pattern. Vary card size/ratio/emphasis between tiers so the page no longer reads as one repeated template.
-
-## Detail Pages (`src/pages/ProjectDetail.tsx`)
-
-Add a **Visit Website** button in the hero for any project with `liveUrl`. Add a "Related Projects" block when `relatedSlugs`/`usedBy`/`builtFrom` exist, linking between the OCR pipeline, Instagram tool, and Philono. Existing prev/next nav stays.
-
-## Out of Scope
-
-- Homepage `ProjectsPreview` stays unchanged (per your choice).
-- No backend; everything is static data + assets.
-
-## Technical Notes
-
-- Card-in-card linking: outer `<Link>` to detail page, inner external `<a>` for Visit Website with `onClick={e => e.stopPropagation()}` to avoid route navigation when the button is clicked.
-- Screenshots captured at build time and committed as image assets; imported normally in `projects.ts`.
-- Generated diagrams created with the image tool, saved under `src/assets/`, monochrome to fit tokens.
+- Hero section, navigation, other pages, typography, and color tokens remain unchanged.
+- No backend; the contact form's existing submit behavior is preserved.

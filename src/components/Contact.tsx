@@ -5,7 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import RobotEyes from "@/components/RobotEyes";
 import bgContact from "@/assets/bg-contact.png";
+
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -89,31 +91,35 @@ const Contact = () => {
                   <p className="text-xl text-white">
                     Available for freelance, startups, and full-time roles
                   </p>
-                </div>
-
-                <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6">
-                  <h4 className="text-minimal text-white/60 mb-4">CONNECT</h4>
-                  <a 
-                    href="https://www.linkedin.com/in/mohithkanna" 
-                    target="_blank" 
+                  <a
+                    href="https://www.linkedin.com/in/mohithkanna"
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-xl text-white hover:text-white/80 transition-colors duration-300"
+                    className="mt-4 inline-flex items-center text-lg text-white hover:text-white/80 transition-colors duration-300"
                   >
                     <Linkedin className="w-5 h-5 mr-3" />
                     LinkedIn
                   </a>
                 </div>
               </div>
+
+              {/* Robot Companion */}
+              <div className="mt-12 pl-2">
+                <RobotEyes className="w-32 h-32 md:w-40 md:h-40" />
+              </div>
             </div>
+
             
             <div 
               ref={rightRef}
-              className={`transition-all duration-700 delay-200 ${
+              className={`transition-all duration-700 delay-200 flex justify-end ${
                 rightVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-8">
+              <div className="w-full max-w-[85%] md:max-w-[85%]">
+              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-6 scale-[0.97] origin-top-right">
                 <h4 className="text-minimal text-white/60 mb-6">SEND A MESSAGE</h4>
+
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
@@ -190,7 +196,9 @@ const Contact = () => {
                   Whether you need an AI system, a full-stack app, or automation tools—I build to ship.
                 </p>
               </div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
