@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Navigation from "@/components/Navigation";
-import { projects } from "@/data/projects";
+import { projects, Project, getProjectBySlug } from "@/data/projects";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const ProjectDetail = () => {
@@ -22,6 +22,19 @@ const ProjectDetail = () => {
     navigate("/");
     return null;
   }
+
+  const relatedSlugs = Array.from(
+    new Set([
+      ...(project.builtFrom ?? []),
+      ...(project.usedBy ? [project.usedBy] : []),
+      ...(project.relatedSlugs ?? []),
+    ]),
+  );
+  const relatedProjects = relatedSlugs
+    .map(getProjectBySlug)
+    .filter((p): p is Project => Boolean(p));
+
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,7 +66,19 @@ const ProjectDetail = () => {
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   {project.description}
                 </p>
-                
+
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Visit Website
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                )}
+
                 <div className="mt-8">
                   <h4 className="text-minimal text-muted-foreground mb-3">TECH STACK</h4>
                   <div className="flex flex-wrap gap-2">
@@ -73,7 +98,7 @@ const ProjectDetail = () => {
                 <img 
                   src={project.image} 
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full ${project.tier === "system" ? "object-contain p-6 bg-background" : "object-cover object-top"}`}
                 />
               </div>
             </div>
@@ -144,6 +169,39 @@ const ProjectDetail = () => {
           </div>
         </div>
       </section>
+
+      {/* Related Projects */}
+      {relatedProjects.length > 0 && (
+        <section className="pb-24 border-t border-border pt-20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-minimal text-muted-foreground mb-8">RELATED PROJECTS</h2>
+              <div className="grid sm:grid-cols-2 gap-6">
+                {relatedProjects.map((related) => (
+                  <Link
+                    key={related.slug}
+                    to={`/project/${related.slug}`}
+                    className="group p-6 border border-border hover:border-foreground/30 transition-colors"
+                  >
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {related.status ?? related.category}
+                    </span>
+                    <h3 className="text-xl font-light text-architectural mt-2 group-hover:text-muted-foreground transition-colors flex items-center justify-between gap-2">
+                      {related.title}
+                      <ArrowRight className="w-4 h-4 shrink-0" />
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                      {related.description}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+
 
       {/* Project Navigation */}
       <section className="py-20 border-t border-border">
