@@ -66,7 +66,19 @@ const ProjectDetail = () => {
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   {project.description}
                 </p>
-                
+
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Visit Website
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                )}
+
                 <div className="mt-8">
                   <h4 className="text-minimal text-muted-foreground mb-3">TECH STACK</h4>
                   <div className="flex flex-wrap gap-2">
