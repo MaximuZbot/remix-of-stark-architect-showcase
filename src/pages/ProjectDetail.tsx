@@ -170,6 +170,39 @@ const ProjectDetail = () => {
         </div>
       </section>
 
+      {/* Related Projects */}
+      {relatedProjects.length > 0 && (
+        <section className="pb-24 border-t border-border pt-20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-minimal text-muted-foreground mb-8">RELATED PROJECTS</h2>
+              <div className="grid sm:grid-cols-2 gap-6">
+                {relatedProjects.map((related) => (
+                  <Link
+                    key={related.slug}
+                    to={`/project/${related.slug}`}
+                    className="group p-6 border border-border hover:border-foreground/30 transition-colors"
+                  >
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {related.status ?? related.category}
+                    </span>
+                    <h3 className="text-xl font-light text-architectural mt-2 group-hover:text-muted-foreground transition-colors flex items-center justify-between gap-2">
+                      {related.title}
+                      <ArrowRight className="w-4 h-4 shrink-0" />
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                      {related.description}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+
+
       {/* Project Navigation */}
       <section className="py-20 border-t border-border">
         <div 
