@@ -112,12 +112,14 @@ const Contact = () => {
             
             <div 
               ref={rightRef}
-              className={`transition-all duration-700 delay-200 ${
+              className={`transition-all duration-700 delay-200 flex justify-end ${
                 rightVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-8">
+              <div className="w-full max-w-[85%] md:max-w-[85%]">
+              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-6 scale-[0.97] origin-top-right">
                 <h4 className="text-minimal text-white/60 mb-6">SEND A MESSAGE</h4>
+
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
