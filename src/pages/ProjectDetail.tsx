@@ -98,7 +98,7 @@ const ProjectDetail = () => {
                 <img 
                   src={project.image} 
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full ${project.tier === "system" ? "object-contain p-6 bg-background" : "object-cover object-top"}`}
                 />
               </div>
             </div>
