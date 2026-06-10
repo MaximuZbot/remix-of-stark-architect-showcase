@@ -154,4 +154,42 @@ html {
       @apply opacity-100 translate-y-0;
     }
   }
+
+  /* Robot Companion Widget */
+  .robot-widget-container {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+    animation: robot-breathe 6s ease-in-out infinite;
+  }
+
+  .robot-shell {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    -webkit-user-drag: none;
+  }
+
+  .robot-eyes-canvas {
+    position: absolute;
+    top: 31.5%;
+    left: 20.5%;
+    width: 59%;
+    height: 44.5%;
+    display: block;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  @keyframes robot-breathe {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-6px) rotate(-0.4deg);
+    }
+  }
 }
+
