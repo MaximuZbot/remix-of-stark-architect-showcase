@@ -64,13 +64,14 @@ const Hero = () => {
       <div className="absolute inset-0 z-[15] pointer-events-none bg-gradient-to-b from-black/70 via-transparent to-black/80 md:hidden" />
 
       {/* LAYER 3 — Foreground robots cutout (planted, stationary) */}
-      <div className="absolute bottom-0 right-0 z-20 h-full pointer-events-none">
+      <div className="absolute bottom-0 right-0 z-20 h-full flex items-end justify-end pointer-events-none">
         <img
           src={robotsAsset.url}
           alt="Two robots and a robotic cat standing in the alleyway"
-          className="h-[42%] sm:h-[55%] md:h-full w-auto object-contain object-bottom ml-auto"
+          className="h-[46%] sm:h-[60%] md:h-full w-auto object-contain object-bottom"
         />
       </div>
+
 
       {/* LAYER 2 — Headline + description (above scrim, in front of background) */}
       <div
