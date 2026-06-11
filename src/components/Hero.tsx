@@ -1,67 +1,102 @@
-import { Button } from "@/components/ui/button";
-import { Linkedin } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-architecture.jpg";
-import heroMobileImage from "@/assets/hero-mobile.webp";
+import { useState, useEffect, useRef } from "react";
+import alleyAsset from "@/assets/hero-alley.png.asset.json";
+import robotsAsset from "@/assets/hero-robots.png.asset.json";
+
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const frame = useRef<number>();
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, {
-      passive: true
-    });
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Calculate fade-out opacity (starts fading at 100px, fully faded at 400px)
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+
+    const handleMove = (e: MouseEvent) => {
+      if (frame.current) cancelAnimationFrame(frame.current);
+      frame.current = requestAnimationFrame(() => {
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+        setParallax({ x, y });
+      });
+    };
+
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      if (frame.current) cancelAnimationFrame(frame.current);
+    };
+  }, []);
+
+  // Fade-out as the user scrolls past the fold.
   const contentOpacity = Math.max(0, 1 - scrollY / 400);
-  return <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Parallax */}
-      <div className="absolute inset-0 bg-cover bg-no-repeat" style={{
-      backgroundImage: `url(${heroMobileImage})`,
-      backgroundPosition: 'right center',
-      transform: `translateY(${scrollY * 0.3}px) scale(1.1)`
-    }} />
-      
-      {/* Overlay */}
-      <div className="absolute inset-0 hero-overlay" />
-      
-      {/* Content with Fade Effect */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 transition-opacity duration-100" style={{
-      opacity: contentOpacity
-    }}>
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white text-architectural mb-4 reveal">
-          MOHITH KANNA
-        </h1>
-        <p className="text-lg md:text-xl text-white/90 font-light tracking-wide mb-6 reveal-delayed">
-          AI-Powered Solo Builder | Computer Vision (YOLO) | Automation & App Developer
-        </p>
-        <p className="text-base md:text-lg text-white/70 font-light max-w-2xl mx-auto mb-12 reveal-delayed">
-          I build AI-powered software, computer vision systems, and automation tools that replace manual workflows and ship fast.
-        </p>
-        
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 reveal-delayed">
-          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
-            <Link to="/projects">View Projects</Link>
-          </Button>
-          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
-            <a href="#contact">Work With Me</a>
-          </Button>
-          <Button variant="outline" size="lg" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
-            <a href="https://www.linkedin.com/in/mohithkanna" target="_blank" rel="noopener noreferrer">
-              <Linkedin className="w-4 h-4 mr-2" />
-              LinkedIn
-            </a>
-          </Button>
+
+  return (
+    <section className="relative w-full h-screen min-h-[600px] overflow-hidden bg-black">
+      {/* LAYER 1 — Alleyway background */}
+      <div
+        className="absolute inset-0 z-10 will-change-transform"
+        style={{
+          transform: `translate3d(${parallax.x * -12}px, ${parallax.y * -12}px, 0) scale(1.08)`,
+        }}
+      >
+        <img
+          src={alleyAsset.url}
+          alt="Industrial alleyway with graffiti wall and neon light"
+          className="w-full h-full object-cover object-center"
+        />
+        {/* Legibility gradient mask */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
+
+        {/* Neon light glow over the overhead tube */}
+        <div className="absolute top-[8%] left-1/2 -translate-x-1/4 w-[34%] h-16 bg-amber-400/30 blur-2xl rounded-full" />
+        <div className="absolute top-[6%] left-1/2 -translate-x-1/4 w-[44%] h-40 bg-amber-300/15 blur-3xl rounded-full" />
+      </div>
+
+      {/* LAYER 2 — Headline + description */}
+      <div
+        className="absolute inset-0 z-20 flex items-center will-change-transform"
+        style={{
+          transform: `translate3d(${parallax.x * -6}px, ${parallax.y * -6}px, 0)`,
+          opacity: contentOpacity,
+        }}
+      >
+        <div className="w-full md:w-[55%] px-6 md:px-12 lg:px-20">
+          <h1 className="font-display font-extrabold uppercase text-white tracking-tighter leading-[0.92] text-[clamp(3rem,8vw,6rem)]">
+            Mohith
+            <br />
+            Kanna
+          </h1>
+          <p className="mt-6 text-zinc-200 font-semibold text-base md:text-lg max-w-xl leading-relaxed">
+            AI-Powered Solo Builder | Computer Vision (YOLO) | Automation &amp; App Developer
+          </p>
+          <p className="mt-4 text-zinc-300 text-lg md:text-xl max-w-xl leading-relaxed">
+            I build AI-powered software, computer vision systems, and automation tools that replace manual workflows and ship fast.
+          </p>
         </div>
       </div>
-      
-      {/* Scroll Indicator */}
-      
-    </section>;
+
+      {/* LAYER 3 — Foreground robots cutout */}
+      <div
+        className="absolute bottom-0 right-0 z-30 h-full will-change-transform pointer-events-none"
+        style={{
+          transform: `translate3d(${parallax.x * -2}px, 0, 0)`,
+        }}
+      >
+        <img
+          src={robotsAsset.url}
+          alt="Two robots and a robotic cat standing in the alleyway"
+          className="h-[70%] md:h-full w-auto object-contain object-bottom ml-auto"
+        />
+      </div>
+    </section>
+  );
 };
+
 export default Hero;
