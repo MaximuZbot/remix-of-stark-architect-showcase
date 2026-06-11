@@ -191,5 +191,67 @@ html {
       transform: translateY(-6px) rotate(-0.4deg);
     }
   }
+
+  /* Tools of the Trade — infinite marquee */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .marquee-left {
+    animation: marquee-scroll-left 40s linear infinite;
+  }
+
+  .marquee-right {
+    animation: marquee-scroll-right 40s linear infinite;
+  }
+
+  .marquee-group:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-scroll-right {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-left,
+    .marquee-right {
+      animation: none;
+    }
+  }
 }
+
 

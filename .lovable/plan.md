@@ -1,58 +1,58 @@
-# Hero Section — 3D Parallax Brutalist Redesign
+# Hero Mobile Fix + "Tools of the Trade" Logo Marquee
 
-Rebuild the home-page hero (`src/components/Hero.tsx`) into a full-screen, three-layer parallax scene: alleyway background, massive left-aligned "MOHITH KANNA" headline, and the robot/cat cutout pinned bottom-right so the robots overlap the text. Uses **Syne** for the display headline and **Plus Jakarta Sans** for body text. This is a scoped, user-requested override of the usual "preserve template" rule, and only affects the hero.
+Two scoped changes: (1) fix the hero on mobile and the graffiti/text legibility + "floating" robots, and (2) replace the `Tech Stack` section with a cinematic monochrome logo carousel. This is a user-requested, scoped override of the usual "preserve template" rule, limited to `Hero.tsx` and `TechStack.tsx` (plus marquee keyframes).
 
-## 1. Assets
+## Part 1 — Hero fixes (`src/components/Hero.tsx`)
 
-- Register the two uploaded images as CDN assets (no embedding of binaries in the repo):
-  - `hero-alley.jpg` — alleyway background (wall, graffiti, bike, neon tube; no robots).
-  - `hero-robots.png` — transparent cutout of the two robots + cat.
-- Import both via their `.asset.json` pointers in `Hero.tsx`.
+**Robots should be planted, not floating**
+- Remove the mouse-parallax transform from the robot layer entirely so the robots stay completely stationary and look like they're standing in the scene (the background + text keep their subtle parallax).
+- On mobile, anchor the robots to the bottom-right corner at a smaller size so they read as "standing on the ground" instead of hovering mid-screen.
 
-## 2. Fonts
+**Graffiti vs. text legibility**
+- Let the graffiti read stronger by easing off the heavy full-width darkening, and instead put a *focused* legibility scrim directly behind the text block only (a left-anchored gradient / soft vignette under the headline + description). Result: graffiti looks bolder and "more out there" on the open right side, while the text always sits on its own protected dark zone.
+- Keep the amber neon glow over the light tube.
 
-- Load **Syne** (700/800) and **Plus Jakarta Sans** (400/500) via Google Fonts `<link>` in `index.html`.
-- Add `font-display` (Syne) and extend `font-sans` (Plus Jakarta Sans) in `tailwind.config.ts` so the rest of the template's typography is untouched except where explicitly used in the hero.
-
-## 3. Three-layer Z-index stack
-
-Full-screen container: `w-full h-screen min-h-[600px] relative overflow-hidden bg-black`.
+**Mobile layout (the "crumbling")**
+- Restructure so the headline + description occupy the upper portion with a solid dark scrim, and the robots occupy the lower-right band — no overlap of text and robots.
+- Reduce robot height on mobile (e.g. anchored bottom-right, ~55–60% width) and strengthen the bottom/left gradient so text never collides with the robots or graffiti.
+- Headline keeps the fluid `clamp()` sizing; verify line breaks and spacing at 390px.
 
 ```text
- z-30  ┌───────────────────────────────────────────┐
-       │  LAYER 3 — robots cutout (bottom-right)     │
- z-20  │  LAYER 2 — headline + subtitle (left)       │
- z-10  │  LAYER 1 — alley bg + gradient mask + glow  │
-       └───────────────────────────────────────────┘
+ MOBILE                      DESKTOP
+ ┌──────────────┐           ┌───────────────────────────┐
+ │ MOHITH       │           │ MOHITH KANNA      [robot]  │
+ │ KANNA        │           │ subtitle          [robot]  │
+ │ subtitle     │           │ description      [robot/cat]│
+ │ description  │           │                            │
+ │        [robots]│         └───────────────────────────┘
+ └──────────────┘
 ```
 
-- **Layer 1 (background):** alley image `absolute inset-0 w-full h-full object-cover`, with an overlay `bg-gradient-to-r from-black/80 via-black/40 to-transparent` for left-side legibility.
-- **Layer 2 (text):** left-aligned content box (~55% width, vertically centered), z-index above background, below robots — so the right edge of the headline tucks behind the standing robot.
-- **Layer 3 (robots):** cutout `absolute bottom-0 right-0 h-full w-auto object-contain`, aligned to sit naturally in the scene.
+## Part 2 — "Tools of the Trade" marquee (`src/components/TechStack.tsx`)
 
-## 4. Typography & content (left-aligned)
+Replace the wrapped-pill `Tech Stack` block with an infinite two-row logo marquee.
 
-- Remove the three centered CTA buttons (View Projects / Work With Me / LinkedIn) from the hero fold.
-- **Headline:** "MOHITH KANNA" in Syne, ultra-bold uppercase, `text-[clamp(3rem,8vw,6rem)] tracking-tighter leading-[0.95]`, solid white.
-- **Subtitle/description block** directly beneath:
-  - Line 1: "AI-Powered Solo Builder | Computer Vision (YOLO) | Automation & App Developer"
-  - Paragraph: "I build AI-powered software, computer vision systems, and automation tools that replace manual workflows and ship fast."
-  - Styling: `text-zinc-300 text-lg md:text-xl max-w-xl mt-4 leading-relaxed`.
+**Section header**
+- Rename heading to `TOOLS OF THE TRADE` (keep the small `TECHNOLOGIES`-style eyebrow or update it to match), same typographic style as other sections so it stays on-brand.
 
-## 5. Neon glow & parallax polish
+**Logos — monochrome white**
+- Use the `simple-icons` package for real brand SVG paths, rendered as inline SVGs with `fill: currentColor` and `text-white`.
+- Default state: white at ~60% opacity, name hidden. Hover: 100% opacity + soft glow (drop-shadow) + the tool name fades in beneath the logo.
+- Icons sourced from simple-icons: OpenAI, Claude, Gemini, Ollama, Python, OpenCV, Firebase, Supabase, React, Next.js, Docker, GitHub, Razorpay, Stripe, Vercel, Figma, Blender, n8n, Make.
+- A few have no simple-icon (YOLO, Fusion 360, Roboflow, OpenRouter): render these as clean uppercase white wordmarks styled to match, so the row stays consistent. (Capabilities like OCR, AI Agents, Automation Scripts, Internal Tools are intentionally NOT included — they're not technologies.)
 
-- **Neon glow:** absolute element positioned over the overhead light tube (`bg-amber-400/20 blur-xl rounded-full`, plus a softer wider halo) to make the lighting feel vibrant and cast warmth onto the scene.
-- **Mouse-move parallax (CSS transforms, no new dependency):** track cursor via a `mousemove` listener and `requestAnimationFrame`; apply transforms by layer depth:
-  - Background wall: largest shift (~12px).
-  - Headline/text: medium shift (~6px).
-  - Robots: minimal/near-fixed shift (~2px) to sell depth.
-  - Respects `prefers-reduced-motion` (disables the effect).
+**Carousel structure**
+- Row 1 scrolls continuously left: OpenAI · Claude · Gemini · Ollama · Python · YOLO · OpenCV · Firebase · Supabase
+- Row 2 scrolls continuously right: React · Next.js · Docker · GitHub · Razorpay · Stripe · Vercel · Fusion 360
+- Each row's items are duplicated once for a seamless infinite loop; edges fade out with a left/right mask gradient.
+- Marquee runs on pure CSS transforms (`@keyframes marquee-left` / `marquee-right`), pauses on hover, and respects `prefers-reduced-motion`.
 
-## 6. Responsive behavior
+## Technical notes
 
-- Desktop: full three-layer composition as above.
-- Mobile: headline scales down via the `clamp()`, robots shrink/anchor bottom-right without covering the headline, gradient mask strengthened so text stays legible. Keeps the existing scroll-driven fade-out behavior already in the component.
+- Add `simple-icons` as a dependency; import only the specific icons needed (tree-shakeable) and read each icon's `.path` for the SVG.
+- Add the two marquee keyframes + utility classes (in `index.css` or `tailwind.config.ts`).
+- No backend, routing, or other sections touched.
 
 ## Out of scope
 
-- No changes to navigation, other sections, other pages, color tokens, or the contact robot widget. Only `Hero.tsx`, `index.html` (font link), and `tailwind.config.ts` (font registration) are touched, plus the two new asset pointers.
+- Navigation, other sections/pages, color tokens, and the contact robot widget remain unchanged.
