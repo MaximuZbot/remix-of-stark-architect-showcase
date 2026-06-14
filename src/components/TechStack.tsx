@@ -52,20 +52,20 @@ const rowTwo: Tool[] = [
 ];
 
 const LogoItem = ({ tool }: { tool: Tool }) => (
-  <div className="group/item flex flex-col items-center justify-center gap-3 px-8 md:px-12 shrink-0">
+  <div className="group/item flex flex-col items-center justify-center gap-3 px-6 md:px-12 shrink-0">
     <div className="h-10 flex items-center justify-center text-white/60 transition-all duration-300 group-hover/item:text-white group-hover/item:[filter:drop-shadow(0_0_10px_rgba(255,255,255,0.55))]">
       {tool.path ? (
         <svg
           role="img"
           aria-label={tool.name}
           viewBox="0 0 24 24"
-          className="h-9 w-9"
+          className="h-7 w-7 md:h-9 md:w-9"
           fill="currentColor"
         >
           <path d={tool.path} />
         </svg>
       ) : (
-        <span className="text-2xl font-display font-extrabold uppercase tracking-tight whitespace-nowrap">
+        <span className="text-lg md:text-2xl font-sans font-semibold tracking-tight whitespace-nowrap">
           {tool.wordmark}
         </span>
       )}
