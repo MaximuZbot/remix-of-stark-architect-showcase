@@ -128,7 +128,7 @@ const Contact = () => {
               }`}
             >
               <div className="w-full max-w-[85%] md:max-w-[85%]">
-              <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-6 scale-[0.97] origin-top-right">
+              <div id="message-form" className="scroll-mt-24 backdrop-blur-md bg-white/5 border border-white/10 rounded-lg p-6 scale-[0.97] origin-top-right">
                 <h4 className="text-minimal text-white/60 mb-6">SEND A MESSAGE</h4>
 
                 
