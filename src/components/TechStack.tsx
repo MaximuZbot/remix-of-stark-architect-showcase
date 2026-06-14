@@ -111,7 +111,7 @@ const TechStack = () => {
             }`}
           >
             <h2 className="text-minimal text-white/50 mb-4">THE ARSENAL</h2>
-            <h3 className="text-4xl md:text-6xl font-display font-extrabold uppercase tracking-tighter text-white">
+            <h3 className="text-4xl md:text-6xl font-light text-white">
               Tools of the Trade
             </h3>
           </div>
