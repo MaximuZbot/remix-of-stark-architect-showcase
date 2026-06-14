@@ -103,10 +103,21 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Robot Companion */}
-              <div className="mt-12 pl-2">
-                <RobotEyes className="w-32 h-32 md:w-40 md:h-40" />
+              {/* Robot Companion + mobile message CTA */}
+              <div className="mt-12 flex items-center gap-4">
+                <RobotEyes className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 shrink-0" />
+                <a
+                  href="#message-form"
+                  className="md:hidden flex-1 backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-4 transition-colors hover:bg-white/10"
+                >
+                  <h4 className="text-minimal text-white/60 mb-1">SAY HELLO</h4>
+                  <p className="text-base text-white font-medium leading-snug">
+                    Got a project? Send a message
+                    <span aria-hidden className="ml-1">&rarr;</span>
+                  </p>
+                </a>
               </div>
+
             </div>
 
             
