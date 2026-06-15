@@ -19,7 +19,8 @@ const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isSandbox, setIsSandbox] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
-  const [showTiltToast, setShowTiltToast] = useState(false);
+  const [showMobilePrompt, setShowMobilePrompt] = useState(false);
+  const matterMouseRef = useRef<Matter.Mouse | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);
@@ -81,13 +82,13 @@ const Hero = () => {
     setIsInteractive(nextInteractive);
     if (nextInteractive) {
       enableTiltPhysics();
-      // Show instruction toast on mobile/tablet screens
+      // Show full-screen calibration overlay on mobile/tablet screens
       if (typeof window !== "undefined" && window.innerWidth < 768) {
-        setShowTiltToast(true);
-        setTimeout(() => setShowTiltToast(false), 5000);
+        setShowMobilePrompt(true);
+        setTimeout(() => setShowMobilePrompt(false), 1500);
       }
     } else {
-      setShowTiltToast(false);
+      setShowMobilePrompt(false);
     }
   };
 
@@ -162,7 +163,7 @@ const Hero = () => {
 
   // Dynamically add/remove mouse constraint from Matter world to prevent scroll lock
   useEffect(() => {
-    if (!engineRef.current || !containerRef.current) return;
+    if (!engineRef.current || !containerRef.current || !matterMouseRef.current) return;
     const world = engineRef.current.world;
     const engine = engineRef.current;
     const container = containerRef.current;
@@ -172,18 +173,13 @@ const Hero = () => {
     // Only add MouseConstraint on desktop. On mobile, we use orientation tilt,
     // which avoids any touch-hijacking or scroll locks completely.
     if (isInteractive && !isMobile) {
-      const mouse = Matter.Mouse.create(container);
       const mouseConstraint = Matter.MouseConstraint.create(engine, {
-        mouse: mouse,
+        mouse: matterMouseRef.current,
         constraint: {
           stiffness: 0.25,
           render: { visible: false },
         },
       });
-
-      // Disable mouse scroll hijacking from Matter.js
-      mouse.element.removeEventListener("mousewheel", (mouse as any).mousewheel);
-      mouse.element.removeEventListener("DOMMouseScroll", (mouse as any).mousewheel);
 
       Matter.Composite.add(world, mouseConstraint);
       mouseConstraintRef.current = mouseConstraint;
@@ -308,7 +304,12 @@ const Hero = () => {
 
     Composite.add(engine.world, [floor, ceiling, leftWall, rightWall]);
 
-    // 5. Mouse Constraint initialized dynamically in useEffect below based on isInteractive state
+    // 5. Initialize Mouse and cache it in ref to prevent listener leak
+    const mouse = Mouse.create(containerRef.current);
+    // Disable default scroll hijacking by Matter.js immediately
+    mouse.element.removeEventListener("mousewheel", (mouse as any).mousewheel);
+    mouse.element.removeEventListener("DOMMouseScroll", (mouse as any).mousewheel);
+    matterMouseRef.current = mouse;
 
     // 6. Physics Loop - update absolute CSS transforms on DOM elements
     Events.on(engine, "afterUpdate", () => {
@@ -526,18 +527,26 @@ const Hero = () => {
             id="hero-watermark-backdrop"
             className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-4 font-display font-extrabold uppercase"
             style={{ 
-              willChange: "transform, opacity, filter",
+              willChange: "transform, opacity",
               opacity: watermarkOpacity,
-              filter: glowRadius > 0 ? `drop-shadow(0 0 ${glowRadius}px rgba(255, 255, 255, ${glowAlpha}))` : "none"
             }}
           >
-            <div className="text-[clamp(3.2rem,8.5vw,8rem)] tracking-wider leading-none flex justify-center">
+            <div 
+              style={{ textShadow: glowRadius > 0 ? `0 0 ${glowRadius}px rgba(255, 255, 255, ${glowAlpha})` : "none" }}
+              className="text-[clamp(3.2rem,8.5vw,8rem)] tracking-wider leading-none flex justify-center"
+            >
               {renderFlickeringText("Tony Stark", [0, 3, 8])}
             </div>
-            <div className="text-[clamp(1.9rem,5.8vw,4.8rem)] tracking-wider leading-none flex justify-center mt-2">
+            <div 
+              style={{ textShadow: glowRadius > 0 ? `0 0 ${glowRadius}px rgba(255, 255, 255, ${glowAlpha})` : "none" }}
+              className="text-[clamp(1.9rem,5.8vw,4.8rem)] tracking-wider leading-none flex justify-center mt-2"
+            >
               {renderFlickeringText("Is The First", [4, 9])}
             </div>
-            <div className="text-[clamp(3.2rem,8.5vw,8rem)] tracking-wider leading-none flex justify-center mt-2">
+            <div 
+              style={{ textShadow: glowRadius > 0 ? `0 0 ${glowRadius}px rgba(255, 255, 255, ${glowAlpha})` : "none" }}
+              className="text-[clamp(3.2rem,8.5vw,8rem)] tracking-wider leading-none flex justify-center mt-2"
+            >
               {renderFlickeringText("Vibe Coder", [0, 3, 7])}
             </div>
           </div>
@@ -667,19 +676,24 @@ const Hero = () => {
           </button>
         </div>
 
-        {/* 6.5. Tilt device instruction toast */}
+        {/* 6.5. Mobile Calibration / Interactivity Overlay */}
         <div 
-          className={`fixed bottom-44 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 px-4 py-3 bg-[#0c0d12]/90 border border-amber-500/30 text-amber-200 text-xs font-mono rounded-xl shadow-[0_8px_32px_rgba(245,158,11,0.15)] backdrop-blur-md transition-all duration-500 ${
-            showTiltToast ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-          } max-w-[90vw] text-center justify-center`}
+          className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-opacity duration-500 md:hidden ${
+            showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         >
-          <div className="flex items-center gap-2">
-            <span className="animate-bounce">📱</span>
-            <span className="font-bold">DRAG BLOCKS OR TILT DEVICE TO INTERACT!</span>
+          <div className="flex flex-col items-center gap-4 text-center px-6">
+            <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" />
+            <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse">
+              [ SYSTEM CALIBRATING ]
+            </span>
+            <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase">
+              PHYSICS ENGAGED
+            </h2>
+            <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase">
+              TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
+            </p>
           </div>
-          <span className="text-[10px] text-zinc-400 leading-normal max-w-xs">
-            Note: Gyroscope tilt requires a secure context (HTTPS) on iOS. If using HTTP, enjoy touch dragging!
-          </span>
         </div>
 
         {/* 7. Scroll Down Indicator */}
