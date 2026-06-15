@@ -436,8 +436,8 @@ const Hero = () => {
           Matter.Body.setVelocity(blobBodyRef.current, { x: 0, y: 0 });
         }
 
-        const bx = blobBodyRef.current.position.x - 35; // 35px radius
-        const by = blobBodyRef.current.position.y - 35;
+        const bx = blobBodyRef.current.position.x - 40; // 40px visual radius (width 80)
+        const by = blobBodyRef.current.position.y - 40;
         blobDOMRef.current.style.transform = `translate3d(${bx}px, ${by}px, 0)`;
       }
 
@@ -553,6 +553,36 @@ const Hero = () => {
 
   return (
     <div className="relative w-full h-screen md:h-[260vh] bg-[#030305]">
+      <style>{`
+        @keyframes tilt-phone {
+          0%, 100% { transform: rotate(-10deg); }
+          50% { transform: rotate(10deg); }
+        }
+        .animate-tilt-phone {
+          animation: tilt-phone 2.5s ease-in-out infinite;
+          transform-origin: center center;
+        }
+        @keyframes spin-loader {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .animate-spin-loader {
+          animation: spin-loader 1.5s linear infinite;
+        }
+        @keyframes morph-blob {
+          0%, 100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+          25% { border-radius: 70% 30% 52% 48% / 60% 40% 60% 40%; }
+          50% { border-radius: 30% 70% 60% 40% / 50% 60% 40% 50%; }
+          75% { border-radius: 60% 40% 30% 70% / 40% 50% 60% 50%; }
+        }
+        @keyframes rotate-blob {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .animate-morph-blob {
+          animation: morph-blob 6s ease-in-out infinite, rotate-blob 12s linear infinite;
+        }
+      `}</style>
       <section 
         ref={containerRef}
         className={`sticky top-0 w-full h-screen min-h-[640px] overflow-hidden flex items-center select-none ${
@@ -740,15 +770,22 @@ const Hero = () => {
             }}
             style={{
               position: "absolute",
-              width: 70, // diameter
-              height: 70,
+              width: 80, // diameter
+              height: 80,
               transformOrigin: "center center",
               willChange: "transform",
               zIndex: 40,
             }}
-            className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-grab active:cursor-grabbing flex items-center justify-center border border-white/20 select-none animate-pulse pointer-events-auto"
+            className="cursor-grab active:cursor-grabbing flex items-center justify-center select-none pointer-events-auto"
           >
-            <span className="font-mono text-[9px] text-black font-extrabold uppercase tracking-tight select-none">
+            {/* Morphing Liquid Background Layer */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-400 opacity-90 shadow-[0_0_35px_rgba(245,158,11,0.5)] border border-white/10 animate-morph-blob" />
+            
+            {/* High-tech tech circle decoration overlays (spins opposite direction) */}
+            <div className="absolute w-[80%] h-[80%] rounded-full border border-white/10 border-dashed pointer-events-none" style={{ animation: "rotate-blob 12s linear infinite reverse" }} />
+            
+            {/* Centered static text */}
+            <span className="relative z-10 font-mono text-[9px] text-black font-black uppercase tracking-[0.15em] select-none pointer-events-none">
               DRAG
             </span>
           </div>
@@ -790,24 +827,6 @@ const Hero = () => {
         <div 
           className="fixed inset-0 bg-[#060608]/98 z-[10000] flex flex-col items-center justify-center p-8 backdrop-blur-md w-screen h-screen"
         >
-          <style>{`
-            @keyframes tilt-phone {
-              0%, 100% { transform: rotate(-10deg); }
-              50% { transform: rotate(10deg); }
-            }
-            .animate-tilt-phone {
-              animation: tilt-phone 2.5s ease-in-out infinite;
-              transform-origin: center center;
-            }
-            @keyframes spin-loader {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            .animate-spin-loader {
-              animation: spin-loader 1.5s linear infinite;
-            }
-          `}</style>
-
           <div className="flex flex-col items-center max-w-sm w-full text-center">
             {/* Top title */}
             <span className="font-mono text-[9px] tracking-[0.3em] text-zinc-500 uppercase mb-12">
