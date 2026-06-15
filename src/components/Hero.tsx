@@ -698,7 +698,7 @@ const Hero = () => {
               if (isInteractive) classStyles += " animate-subtle-text-glow";
             } else if (item.type === "pill") {
               classStyles = "border border-zinc-800 bg-[#090b0c] text-zinc-300 text-xs font-medium flex items-center justify-center rounded-lg select-none hover:border-zinc-500 transition-colors cursor-grab active:cursor-grabbing";
-              if (isInteractive) classStyles += " animate-subtle-glow";
+              classStyles += " animate-subtle-glow";
             } else if (item.type === "button") {
               const isContact = item.link === "#contact";
               let btnStyles = isContact
