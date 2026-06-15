@@ -521,9 +521,9 @@ const Hero = () => {
   const glowEnd = H * 0.45;
   const scrollFactor = Math.min(Math.max((scrollY - glowStart) / (glowEnd - glowStart), 0), 1);
 
-  // Physics elements fade out first (Phase 4: H * 0.85 -> H * 1.0)
-  const physicsFadeStart = H * 0.85;
-  const physicsFadeEnd = H * 1.0;
+  // Physics elements fade out smoothly over a wider range to prevent sudden disappearing
+  const physicsFadeStart = H * 1.0;
+  const physicsFadeEnd = H * 1.8;
   const contentOpacity = scrollY > physicsFadeStart
     ? Math.max(0, 1 - (scrollY - physicsFadeStart) / (physicsFadeEnd - physicsFadeStart))
     : 1;
@@ -732,7 +732,7 @@ const Hero = () => {
               willChange: "transform",
               zIndex: 40,
             }}
-            className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-grab active:cursor-grabbing flex items-center justify-center border border-white/20 select-none animate-pulse"
+            className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-grab active:cursor-grabbing flex items-center justify-center border border-white/20 select-none animate-pulse pointer-events-auto"
           >
             <span className="font-mono text-[9px] text-black font-extrabold uppercase tracking-tight select-none">
               DRAG
