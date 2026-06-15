@@ -58,8 +58,11 @@ const Hero = () => {
     engineRef.current.gravity.y = gravY;
   };
 
-  const enableTiltPhysics = () => {
-    if (isGyroActive.current) return;
+  const enableTiltPhysics = (callback?: () => void) => {
+    if (isGyroActive.current) {
+      if (callback) callback();
+      return;
+    }
 
     if (typeof window !== "undefined" && typeof DeviceOrientationEvent !== "undefined") {
       const requestPermission = (DeviceOrientationEvent as any).requestPermission;
@@ -70,14 +73,20 @@ const Hero = () => {
               window.addEventListener("deviceorientation", handleOrientation);
               isGyroActive.current = true;
             }
+            if (callback) callback();
           })
-          .catch((err: any) => console.error("Gyroscope permission error:", err));
+          .catch((err: any) => {
+            console.error("Gyroscope permission error:", err);
+            if (callback) callback();
+          });
       } else {
         window.addEventListener("deviceorientation", handleOrientation);
         isGyroActive.current = true;
+        if (callback) callback();
       }
     } else {
       console.warn("DeviceOrientationEvent is not supported in this environment");
+      if (callback) callback();
     }
   };
 
@@ -90,22 +99,23 @@ const Hero = () => {
     }
 
     if (nextInteractive) {
-      enableTiltPhysics();
-      // Show full-screen calibration overlay on mobile/tablet screens
-      if (typeof window !== "undefined" && window.innerWidth < 1024) {
-        setShowMobilePrompt(true);
-        setTimeout(() => setShowMobilePrompt(false), 1500);
-      }
+      enableTiltPhysics(() => {
+        // Show full-screen calibration overlay on mobile/tablet screens
+        if (typeof window !== "undefined" && window.innerWidth < 1024) {
+          setShowMobilePrompt(true);
+          setTimeout(() => setShowMobilePrompt(false), 2500);
+        }
 
-      // Delay interactive physics activation on desktop if scrolled down to let scroll finish
-      const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
-      if (!isMobileDevice && scrollY > 100) {
-        setTimeout(() => {
+        // Delay interactive physics activation on desktop if scrolled down to let scroll finish
+        const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
+        if (!isMobileDevice && scrollY > 100) {
+          setTimeout(() => {
+            setIsInteractive(true);
+          }, 500);
+        } else {
           setIsInteractive(true);
-        }, 500);
-      } else {
-        setIsInteractive(true);
-      }
+        }
+      });
     } else {
       setIsInteractive(false);
       setShowMobilePrompt(false);
@@ -526,8 +536,8 @@ const Hero = () => {
   const scrollFactor = Math.min(Math.max((scrollY - glowStart) / (glowEnd - glowStart), 0), 1);
 
   // Physics elements fade out smoothly over a wider range to prevent sudden disappearing
-  const physicsFadeStart = H * 1.0;
-  const physicsFadeEnd = H * 1.8;
+  const physicsFadeStart = H * 0.5;
+  const physicsFadeEnd = H * 1.2;
   const contentOpacity = scrollY > physicsFadeStart
     ? Math.max(0, 1 - (scrollY - physicsFadeStart) / (physicsFadeEnd - physicsFadeStart))
     : 1;
@@ -761,26 +771,6 @@ const Hero = () => {
           </button>
         </div>
 
-        {/* 6.5. Mobile Calibration / Interactivity Overlay */}
-        <div 
-          className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-all duration-500 ${
-            showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <div className="flex flex-col items-center gap-4 text-center px-6">
-            <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" style={{ border: '2px solid #f59e0b', borderTopColor: 'transparent' }} />
-            <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse" style={{ color: '#f59e0b' }}>
-              [ SYSTEM CALIBRATING ]
-            </span>
-            <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase" style={{ color: '#ffffff' }}>
-              PHYSICS ENGAGED
-            </h2>
-            <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase" style={{ color: '#a1a1aa' }}>
-              TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
-            </p>
-          </div>
-        </div>
-
         {/* 7. Scroll Down Indicator */}
         <div 
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 text-zinc-500 pointer-events-none"
@@ -794,6 +784,26 @@ const Hero = () => {
           </div>
         </div>
       </section>
+
+      {/* 6.5. Mobile Calibration / Interactivity Overlay */}
+      <div 
+        className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-all duration-500 ${
+          showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="flex flex-col items-center gap-4 text-center px-6">
+          <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" style={{ border: '2px solid #f59e0b', borderTopColor: 'transparent' }} />
+          <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse" style={{ color: '#f59e0b' }}>
+            [ SYSTEM CALIBRATING ]
+          </span>
+          <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase" style={{ color: '#ffffff' }}>
+            PHYSICS ENGAGED
+          </h2>
+          <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase" style={{ color: '#a1a1aa' }}>
+            TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
