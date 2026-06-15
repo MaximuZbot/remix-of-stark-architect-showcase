@@ -220,9 +220,9 @@ const Hero = () => {
       // Spawn Blob near bottom-center (where the Play button is)
       const blobRadius = 35;
       const blobBody = Bodies.circle(width / 2, height - 150, blobRadius, {
-        restitution: 0.8,
-        friction: 0.1,
-        frictionAir: 0.01,
+        restitution: 1.0, // High bounciness!
+        friction: 0.02, // Lower friction
+        frictionAir: 0.005, // Lower air resistance so it flies and bounces longer!
         label: "blob",
       });
 
@@ -466,7 +466,28 @@ const Hero = () => {
         // Map body simulation coordinates to absolute 3D DOM offsets
         const x = b.body.position.x - b.width / 2;
         const y = b.body.position.y - b.height / 2;
-        el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${b.body.angle}rad)`;
+
+        // Magnifying glass lens effect: Scale items up slightly when the desktop Energy Blob is hovering over them
+        let scaleStr = "";
+        if (blobBodyRef.current && !isMobile) {
+          const dx = b.body.position.x - blobBodyRef.current.position.x;
+          const dy = b.body.position.y - blobBodyRef.current.position.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const activeRadius = 75; // trigger distance
+
+          if (dist < activeRadius) {
+            // Smoothly scale up to 1.18x based on proximity
+            const scaleFactor = 1 + (1 - dist / activeRadius) * 0.18;
+            scaleStr = ` scale(${scaleFactor})`;
+            el.style.zIndex = "35"; // Elevate above other elements
+          } else {
+            el.style.zIndex = "20";
+          }
+        } else {
+          el.style.zIndex = "20";
+        }
+
+        el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${b.body.angle}rad)${scaleStr}`;
       });
     });
 
@@ -778,14 +799,14 @@ const Hero = () => {
             }}
             className="cursor-grab active:cursor-grabbing flex items-center justify-center select-none pointer-events-auto"
           >
-            {/* Morphing Liquid Background Layer */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-400 opacity-90 shadow-[0_0_35px_rgba(245,158,11,0.5)] border border-white/10 animate-morph-blob" />
+            {/* Morphing Glassmorphic Lens Layer */}
+            <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-[12px] bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.18)_0%,rgba(245,158,11,0.12)_35%,transparent_75%)] shadow-[inset_0_4px_12px_rgba(255,255,255,0.2),inset_0_-4px_12px_rgba(0,0,0,0.3),0_8px_32px_rgba(0,0,0,0.4),0_0_20px_rgba(245,158,11,0.12)] border border-white/20 animate-morph-blob" />
             
             {/* High-tech tech circle decoration overlays (spins opposite direction) */}
-            <div className="absolute w-[80%] h-[80%] rounded-full border border-white/10 border-dashed pointer-events-none" style={{ animation: "rotate-blob 12s linear infinite reverse" }} />
+            <div className="absolute w-[82%] h-[82%] rounded-full border border-white/10 border-dashed pointer-events-none" style={{ animation: "rotate-blob 12s linear infinite reverse" }} />
             
             {/* Centered static text */}
-            <span className="relative z-10 font-mono text-[9px] text-black font-black uppercase tracking-[0.15em] select-none pointer-events-none">
+            <span className="relative z-10 font-mono text-[9px] text-zinc-300 font-bold uppercase tracking-[0.2em] select-none pointer-events-none drop-shadow-sm">
               DRAG
             </span>
           </div>

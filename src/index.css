@@ -386,12 +386,12 @@ html {
   /* Subtle pulsing interactive glows */
   @keyframes subtlePulseGlow {
     0%, 100% {
-      box-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), 0 0 6px rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
     }
     50% {
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.85);
     }
   }
 
