@@ -20,7 +20,6 @@ const Hero = () => {
   const [isSandbox, setIsSandbox] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
   const [showMobilePrompt, setShowMobilePrompt] = useState(false);
-  const matterMouseRef = useRef<Matter.Mouse | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);
@@ -34,8 +33,9 @@ const Hero = () => {
   });
   const parallaxRef = useRef({ x: 0, y: 0 });
   const watermarkRef = useRef({ x: 0, y: 0 });
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseConstraintRef = useRef<Matter.MouseConstraint | null>(null);
+  const isDraggingBlobRef = useRef(false);
+  const blobBodyRef = useRef<Matter.Body | null>(null);
+  const blobDOMRef = useRef<HTMLDivElement>(null);
   const scrambleIntervals = useRef<Record<string, any>>({});
   const [textMap, setTextMap] = useState<Record<string, string>>({});
   const isGyroActive = useRef(false);
@@ -79,16 +79,61 @@ const Hero = () => {
 
   const handleToggleSandbox = () => {
     const nextInteractive = !isInteractive;
-    setIsInteractive(nextInteractive);
+
+    if (typeof window !== "undefined") {
+      // Auto-scroll back to Hero top for clean presentation
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     if (nextInteractive) {
       enableTiltPhysics();
       // Show full-screen calibration overlay on mobile/tablet screens
-      if (typeof window !== "undefined" && window.innerWidth < 768) {
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
         setShowMobilePrompt(true);
         setTimeout(() => setShowMobilePrompt(false), 1500);
       }
+
+      // Delay interactive physics activation on desktop if scrolled down to let scroll finish
+      const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 768;
+      if (!isMobileDevice && scrollY > 100) {
+        setTimeout(() => {
+          setIsInteractive(true);
+        }, 500);
+      } else {
+        setIsInteractive(true);
+      }
     } else {
+      setIsInteractive(false);
       setShowMobilePrompt(false);
+      // Rebuild System: Destroy old physics bodies and recreate new ones instantly to prevent sticking/glitches
+      if (engineRef.current && itemsRef.current.length > 0) {
+        const { Composite, Bodies } = Matter;
+        const world = engineRef.current.world;
+
+        // 1. Remove current physics bodies from Matter world
+        if (bodiesMapRef.current.length > 0) {
+          Composite.remove(world, bodiesMapRef.current.map((b) => b.body));
+        }
+
+        // 2. Re-create new bodies at their exact starting positions
+        const newBodies = itemsRef.current.map((item) => {
+          const body = Bodies.rectangle(item.homeX, item.homeY, item.width, item.height, {
+            restitution: 0.6,
+            friction: 0.1,
+            frictionAir: 0.02,
+            label: item.id,
+          });
+          return { id: item.id, body, width: item.width, height: item.height, homeX: item.homeX, homeY: item.homeY };
+        });
+
+        // 3. Clear text scrambles and name scrambled ref so they can scramble again on hover
+        nameScrambledRef.current = false;
+        setTextMap({});
+
+        // 4. Update the refs and add the new bodies to the world
+        bodiesMapRef.current = newBodies;
+        Composite.add(world, newBodies.map((b) => b.body));
+      }
     }
   };
 
@@ -145,48 +190,50 @@ const Hero = () => {
     }
   }, [scrollY, isInteractive]);
 
-  // Lock body scroll on desktop when interactive
+  // Dynamically create/remove the Energy Blob physics body on desktop when interactive
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const isMobile = window.innerWidth < 768;
-
-    if (isInteractive && !isMobile) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isInteractive]);
-
-  // Dynamically add/remove mouse constraint from Matter world to prevent scroll lock
-  useEffect(() => {
-    if (!engineRef.current || !containerRef.current || !matterMouseRef.current) return;
+    if (!engineRef.current || !containerRef.current) return;
     const world = engineRef.current.world;
-    const engine = engineRef.current;
     const container = containerRef.current;
 
     const isMobile = container.clientWidth < 768;
 
-    // Only add MouseConstraint on desktop. On mobile, we use orientation tilt,
-    // which avoids any touch-hijacking or scroll locks completely.
     if (isInteractive && !isMobile) {
-      const mouseConstraint = Matter.MouseConstraint.create(engine, {
-        mouse: matterMouseRef.current,
-        constraint: {
-          stiffness: 0.25,
-          render: { visible: false },
-        },
+      const { Composite, Bodies } = Matter;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      // Spawn Blob near bottom-center (where the Play button is)
+      const blobRadius = 35;
+      const blobBody = Bodies.circle(width / 2, height - 150, blobRadius, {
+        restitution: 0.8,
+        friction: 0.1,
+        frictionAir: 0.01,
+        label: "blob",
       });
 
-      Matter.Composite.add(world, mouseConstraint);
-      mouseConstraintRef.current = mouseConstraint;
+      blobBodyRef.current = blobBody;
+      Composite.add(world, blobBody);
+
+      // Global mouseup to release Blob dragging
+      const handleGlobalMouseUp = () => {
+        if (isDraggingBlobRef.current) {
+          isDraggingBlobRef.current = false;
+          if (blobBodyRef.current) {
+            Matter.Body.setStatic(blobBodyRef.current, false);
+          }
+        }
+      };
+
+      window.addEventListener("mouseup", handleGlobalMouseUp);
 
       return () => {
-        Matter.Composite.remove(world, mouseConstraint);
-        mouseConstraintRef.current = null;
+        window.removeEventListener("mouseup", handleGlobalMouseUp);
+        if (blobBodyRef.current) {
+          Composite.remove(world, blobBodyRef.current);
+          blobBodyRef.current = null;
+        }
+        isDraggingBlobRef.current = false;
       };
     }
   }, [isInteractive]);
@@ -304,12 +351,7 @@ const Hero = () => {
 
     Composite.add(engine.world, [floor, ceiling, leftWall, rightWall]);
 
-    // 5. Initialize Mouse and cache it in ref to prevent listener leak
-    const mouse = Mouse.create(containerRef.current);
-    // Disable default scroll hijacking by Matter.js immediately
-    mouse.element.removeEventListener("mousewheel", (mouse as any).mousewheel);
-    mouse.element.removeEventListener("DOMMouseScroll", (mouse as any).mousewheel);
-    matterMouseRef.current = mouse;
+    // 5. Mouse Constraint initialized dynamically in useEffect below based on isInteractive state
 
     // 6. Physics Loop - update absolute CSS transforms on DOM elements
     Events.on(engine, "afterUpdate", () => {
@@ -357,7 +399,7 @@ const Hero = () => {
 
       // Physics click scramble force
       if (mouseRef.current.explode && mX !== null && mY !== null) {
-        bodies.forEach((b) => {
+        bodiesMapRef.current.forEach((b) => {
           const dx = b.body.position.x - mX;
           const dy = b.body.position.y - mY;
           const dist = Math.hypot(dx, dy) || 1;
@@ -373,8 +415,20 @@ const Hero = () => {
         mouseRef.current.explode = false;
       }
 
-      // Render loop DOM bindings
-      bodies.forEach((b) => {
+      // Dragging Blob update (Desktop Only)
+      if (blobBodyRef.current && blobDOMRef.current) {
+        if (isDraggingBlobRef.current && mX !== null && mY !== null) {
+          Matter.Body.setPosition(blobBodyRef.current, { x: mX, y: mY });
+          Matter.Body.setVelocity(blobBodyRef.current, { x: 0, y: 0 });
+        }
+
+        const bx = blobBodyRef.current.position.x - 35; // 35px radius
+        const by = blobBodyRef.current.position.y - 35;
+        blobDOMRef.current.style.transform = `translate3d(${bx}px, ${by}px, 0)`;
+      }
+
+      // Render loop DOM bindings - dynamic map loop
+      bodiesMapRef.current.forEach((b) => {
         const el = document.getElementById(`phys-${b.id}`);
         if (!el) return;
 
@@ -425,7 +479,6 @@ const Hero = () => {
       World.clear(engine.world, false);
       window.removeEventListener("deviceorientation", handleOrientation);
       Object.values(scrambleIntervals.current).forEach(clearInterval);
-      mouseConstraintRef.current = null;
     };
   }, []);
   // Update DOM dataset state to share mode with Events handler performance-safe
@@ -463,6 +516,7 @@ const Hero = () => {
 
   // Dynamic Scroll Calculations
   const H = typeof window !== "undefined" ? window.innerHeight : 800;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const glowStart = 60;
   const glowEnd = H * 0.45;
   const scrollFactor = Math.min(Math.max((scrollY - glowStart) / (glowEnd - glowStart), 0), 1);
@@ -658,6 +712,33 @@ const Hero = () => {
               </div>
             );
           })}
+        {/* 5.5. Draggable Energy Blob Controller (Desktop Only) */}
+        {isInteractive && !isMobile && (
+          <div
+            ref={blobDOMRef}
+            id="phys-blob"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              isDraggingBlobRef.current = true;
+              if (blobBodyRef.current) {
+                Matter.Body.setStatic(blobBodyRef.current, true);
+              }
+            }}
+            style={{
+              position: "absolute",
+              width: 70, // diameter
+              height: 70,
+              transformOrigin: "center center",
+              willChange: "transform",
+              zIndex: 40,
+            }}
+            className="rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-grab active:cursor-grabbing flex items-center justify-center border border-white/20 select-none animate-pulse"
+          >
+            <span className="font-mono text-[9px] text-black font-extrabold uppercase tracking-tight select-none">
+              DRAG
+            </span>
+          </div>
+        )}
         </div>
 
         {/* 6. Controls: Sandbox Interactivity Trigger — z-[9999] on mobile so fallen blocks can't cover it */}
@@ -677,24 +758,24 @@ const Hero = () => {
         </div>
 
         {/* 6.5. Mobile Calibration / Interactivity Overlay */}
-        <div 
-          className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-opacity duration-500 md:hidden ${
-            showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <div className="flex flex-col items-center gap-4 text-center px-6">
-            <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" />
-            <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse">
-              [ SYSTEM CALIBRATING ]
-            </span>
-            <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase">
-              PHYSICS ENGAGED
-            </h2>
-            <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase">
-              TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
-            </p>
+        {showMobilePrompt && (
+          <div 
+            className="fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-opacity duration-500"
+          >
+            <div className="flex flex-col items-center gap-4 text-center px-6">
+              <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" />
+              <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse">
+                [ SYSTEM CALIBRATING ]
+              </span>
+              <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase">
+                PHYSICS ENGAGED
+              </h2>
+              <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase">
+                TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 7. Scroll Down Indicator */}
         <div 
