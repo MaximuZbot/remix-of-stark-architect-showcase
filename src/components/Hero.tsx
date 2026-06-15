@@ -61,19 +61,23 @@ const Hero = () => {
   const enableTiltPhysics = () => {
     if (isGyroActive.current) return;
 
-    const requestPermission = (DeviceOrientationEvent as any).requestPermission;
-    if (typeof requestPermission === "function") {
-      requestPermission()
-        .then((response: string) => {
-          if (response === "granted") {
-            window.addEventListener("deviceorientation", handleOrientation);
-            isGyroActive.current = true;
-          }
-        })
-        .catch((err: any) => console.error("Gyroscope permission error:", err));
+    if (typeof window !== "undefined" && typeof DeviceOrientationEvent !== "undefined") {
+      const requestPermission = (DeviceOrientationEvent as any).requestPermission;
+      if (typeof requestPermission === "function") {
+        requestPermission()
+          .then((response: string) => {
+            if (response === "granted") {
+              window.addEventListener("deviceorientation", handleOrientation);
+              isGyroActive.current = true;
+            }
+          })
+          .catch((err: any) => console.error("Gyroscope permission error:", err));
+      } else {
+        window.addEventListener("deviceorientation", handleOrientation);
+        isGyroActive.current = true;
+      }
     } else {
-      window.addEventListener("deviceorientation", handleOrientation);
-      isGyroActive.current = true;
+      console.warn("DeviceOrientationEvent is not supported in this environment");
     }
   };
 
