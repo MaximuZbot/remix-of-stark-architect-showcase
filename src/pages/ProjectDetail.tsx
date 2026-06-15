@@ -37,7 +37,7 @@ const ProjectDetail = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background page-transition">
       <Navigation />
       
       {/* Hero */}

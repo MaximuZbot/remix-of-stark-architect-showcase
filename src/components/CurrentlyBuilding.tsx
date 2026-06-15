@@ -62,7 +62,7 @@ const CurrentProjectCard = ({ project, index }: { project: { title: string; desc
   return (
     <div 
       ref={ref}
-      className={`backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6 transition-all duration-700 hover:bg-white/10 ${
+      className={`backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6 transition-all duration-500 hover:bg-white/10 hover:border-[#26ffff]/30 hover:shadow-[0_0_20px_rgba(38,255,255,0.08)] hover:-translate-y-1 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
       style={{ transitionDelay: `${index * 150}ms` }}

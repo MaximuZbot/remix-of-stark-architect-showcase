@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,22 +18,22 @@ const Navigation = () => {
           <Link to="/projects" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             PROJECTS
           </Link>
-          <a href="#capabilities" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          <Link to="/#capabilities" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             CAPABILITIES
-          </a>
-          <a href="#about" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          </Link>
+          <Link to="/#about" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             ABOUT
-          </a>
-          <a href="#tech" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          </Link>
+          <Link to="/#tech" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             TECH
-          </a>
-          <a href="#contact" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+          </Link>
+          <Link to="/#contact" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             CONTACT
-          </a>
+          </Link>
         </div>
 
-        <div className="hidden md:flex items-center space-x-4">
-          <ThemeToggle />
+        <div className="hidden md:block w-[40px]">
+          {/* Spacing alignment helper instead of toggle */}
         </div>
 
         <Button
@@ -54,23 +53,18 @@ const Navigation = () => {
             <Link to="/projects" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               PROJECTS
             </Link>
-            <a href="#capabilities" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <Link to="/#capabilities" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CAPABILITIES
-            </a>
-            <a href="#about" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            </Link>
+            <Link to="/#about" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               ABOUT
-            </a>
-            <a href="#tech" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            </Link>
+            <Link to="/#tech" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               TECH
-            </a>
-            <a href="#contact" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
+            </Link>
+            <Link to="/#contact" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CONTACT
-            </a>
-            
-            {/* Mobile Theme Toggle */}
-            <div className="pt-4 border-t border-border">
-              <ThemeToggle />
-            </div>
+            </Link>
           </div>
         </div>
       )}

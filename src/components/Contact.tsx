@@ -107,7 +107,9 @@ const Contact = () => {
               <div className="mt-12 flex items-center gap-4">
                 <RobotEyes className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 shrink-0" />
                 <a
-                  href="#message-form"
+                  href="https://www.linkedin.com/in/mohithkanna"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="md:hidden flex-1 backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-4 transition-colors hover:bg-white/10"
                 >
                   <h4 className="text-minimal text-white/60 mb-1">SAY HELLO</h4>
@@ -118,12 +120,20 @@ const Contact = () => {
                 </a>
               </div>
 
+              {/* Philosophy — shown on mobile below the robot row */}
+              <div className="md:hidden backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6 mt-6">
+                <p className="text-white/70">
+                  I approach each project with a focus on speed, clarity, and production-ready delivery. 
+                  Whether you need an AI system, a full-stack app, or automation tools—I build to ship.
+                </p>
+              </div>
+
             </div>
 
             
             <div 
               ref={rightRef}
-              className={`transition-all duration-700 delay-200 flex justify-end ${
+              className={`hidden md:flex transition-all duration-700 delay-200 justify-end ${
                 rightVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >

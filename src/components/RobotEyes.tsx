@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import robotHead from "@/assets/robot-head.png.asset.json";
+import robotHead from "@/assets/robot-head.png";
 
 interface RobotEyesProps {
   className?: string;
@@ -218,7 +218,7 @@ const RobotEyes = ({ className = "" }: RobotEyesProps) => {
 
   return (
     <div className={`robot-widget-container ${className}`}>
-      <img src={robotHead.url} alt="Robot companion" className="robot-shell" draggable={false} />
+      <img src={robotHead} alt="Robot companion" className="robot-shell" draggable={false} />
       <canvas ref={canvasRef} className="robot-eyes-canvas" />
     </div>
   );
