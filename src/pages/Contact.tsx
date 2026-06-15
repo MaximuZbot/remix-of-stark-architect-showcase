@@ -30,8 +30,8 @@ const Contact = () => {
                 <div className="space-y-8">
                   <div className="backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg p-6">
                     <h3 className="text-minimal text-white/60 mb-2">EMAIL</h3>
-                    <a href="mailto:hello@archstudio.com" className="text-xl text-white hover:text-white/80 transition-colors duration-300">
-                      hello@archstudio.com
+                    <a href="mailto:mohithkanna1@gmail.com" className="text-xl text-white hover:text-white/80 transition-colors duration-300">
+                      mohithkanna1@gmail.com
                     </a>
                   </div>
                   
