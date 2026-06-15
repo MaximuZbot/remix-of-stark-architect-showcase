@@ -123,6 +123,13 @@ html {
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
+
+  /* Hide Lovable branding watermark and widgets */
+  #lovable-badge,
+  .lovable-badge,
+  iframe[src*="lovable.app"] {
+    display: none !important;
+  }
   
   /* Architectural Typography */
   .text-architectural {

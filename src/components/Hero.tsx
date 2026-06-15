@@ -762,24 +762,24 @@ const Hero = () => {
         </div>
 
         {/* 6.5. Mobile Calibration / Interactivity Overlay */}
-        {showMobilePrompt && (
-          <div 
-            className="fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-opacity duration-500"
-          >
-            <div className="flex flex-col items-center gap-4 text-center px-6">
-              <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" />
-              <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse">
-                [ SYSTEM CALIBRATING ]
-              </span>
-              <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase">
-                PHYSICS ENGAGED
-              </h2>
-              <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase">
-                TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
-              </p>
-            </div>
+        <div 
+          className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-all duration-500 ${
+            showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-4 text-center px-6">
+            <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" style={{ border: '2px solid #f59e0b', borderTopColor: 'transparent' }} />
+            <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse" style={{ color: '#f59e0b' }}>
+              [ SYSTEM CALIBRATING ]
+            </span>
+            <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase" style={{ color: '#ffffff' }}>
+              PHYSICS ENGAGED
+            </h2>
+            <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase" style={{ color: '#a1a1aa' }}>
+              TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
+            </p>
           </div>
-        )}
+        </div>
 
         {/* 7. Scroll Down Indicator */}
         <div 
