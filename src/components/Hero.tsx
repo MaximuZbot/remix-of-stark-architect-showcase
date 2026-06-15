@@ -786,59 +786,94 @@ const Hero = () => {
       </section>
 
       {/* 6.5. Mobile Calibration / Interactivity Overlay */}
-      <div 
-        className={`fixed inset-0 bg-black/60 z-[10000] flex items-center justify-center p-6 backdrop-blur-sm transition-all duration-500 ${
-          showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
+      {showMobilePrompt && (
         <div 
-          className="flex flex-col items-center gap-5 text-center p-8 bg-[#090a0f]/95 border border-amber-500/30 rounded-2xl shadow-[0_0_60px_rgba(245,158,11,0.2)] max-w-xs w-full transition-transform duration-500"
-          style={{
-            transform: showMobilePrompt ? "scale(1)" : "scale(0.9)",
-          }}
+          className="fixed inset-0 bg-[#060608]/98 z-[10000] flex flex-col items-center justify-center p-8 backdrop-blur-md w-screen h-screen"
         >
-          {/* Custom SVG tilting phone illustration */}
-          <svg 
-            viewBox="0 0 64 64" 
-            className="w-16 h-16 animate-pulse mb-2" 
-            fill="none" 
-            stroke="#f59e0b" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            {/* Phone body tilted */}
-            <rect x="22" y="8" width="20" height="48" rx="3.5" transform="rotate(-15 32 32)" />
-            <line x1="28" y1="12" x2="33" y2="12" transform="rotate(-15 32 32)" />
-            <circle cx="32" cy="50" r="1.5" transform="rotate(-15 32 32)" fill="#f59e0b" />
-            {/* Curved arrows left and right */}
-            <path d="M 12,24 C 7,28 7,36 12,40" />
-            <polyline points="9,22 12,24 10,27" />
-            <path d="M 52,40 C 57,36 57,28 52,24" />
-            <polyline points="55,42 52,40 54,37" />
-          </svg>
+          <style>{`
+            @keyframes tilt-phone {
+              0%, 100% { transform: rotate(-10deg); }
+              50% { transform: rotate(10deg); }
+            }
+            .animate-tilt-phone {
+              animation: tilt-phone 2.5s ease-in-out infinite;
+              transform-origin: center center;
+            }
+            @keyframes spin-loader {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            .animate-spin-loader {
+              animation: spin-loader 1.5s linear infinite;
+            }
+          `}</style>
 
-          <span 
-            className="font-mono text-[10px] text-amber-500 tracking-[0.25em] uppercase font-bold"
-            style={{ color: '#f59e0b' }}
-          >
-            [ GYRO CALIBRATION ]
-          </span>
-          <h2 
-            className="font-display font-black text-2xl text-white tracking-tight uppercase"
-            style={{ color: '#ffffff' }}
-          >
-            PHYSICS ACTIVE
-          </h2>
-          <div className="w-12 h-[2px] bg-amber-500/50 my-1" style={{ backgroundColor: 'rgba(245, 158, 11, 0.5)' }} />
-          <p 
-            className="font-mono text-[10px] text-zinc-400 leading-relaxed uppercase"
-            style={{ color: '#a1a1aa' }}
-          >
-            TILT YOUR PHONE LEFT &amp; RIGHT TO SLIDE &amp; BOUNCE BLOCKS
-          </p>
+          <div className="flex flex-col items-center max-w-sm w-full text-center">
+            {/* Top title */}
+            <span className="font-mono text-[9px] tracking-[0.3em] text-zinc-500 uppercase mb-12">
+              [ GYRO CALIBRATION ]
+            </span>
+
+            {/* Illustration Graphic */}
+            <div className="relative w-48 h-32 flex items-center justify-center mb-8">
+              <svg 
+                viewBox="0 0 64 64" 
+                className="w-full h-full" 
+                fill="none" 
+                stroke="white" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                {/* Horizon line */}
+                <line x1="8" y1="36" x2="56" y2="36" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="1" strokeDasharray="1 3" />
+                
+                {/* Tilting Phone body */}
+                <g className="animate-tilt-phone">
+                  <rect x="23" y="10" width="18" height="44" rx="4" fill="#060608" stroke="white" strokeWidth="1.5" />
+                  {/* Speaker slot */}
+                  <line x1="30" y1="14" x2="34" y2="14" stroke="white" strokeWidth="1" />
+                  {/* Home indicator bar (iPhone gesture line) */}
+                  <line x1="29" y1="50" x2="35" y2="50" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="1" />
+                </g>
+
+                {/* Left curved arrow */}
+                <path d="M 18,28 C 14,29 11,32 9,35" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="1" />
+                <polyline points="13,35 9,35 10,31" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="1" />
+
+                {/* Right curved arrow */}
+                <path d="M 46,28 C 50,29 53,32 55,35" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="1" />
+                <polyline points="51,35 55,35 54,31" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="1" />
+              </svg>
+            </div>
+
+            {/* Dotted separator */}
+            <div className="w-16 border-t border-dotted border-zinc-800 opacity-60 mb-8" />
+
+            {/* Main title */}
+            <h2 className="font-display font-extrabold text-2xl md:text-3xl text-white tracking-[0.2em] uppercase mb-4">
+              TILT TO CONTROL
+            </h2>
+
+            {/* Subtitle */}
+            <p className="font-mono text-[9px] tracking-[0.15em] text-zinc-400 max-w-[260px] leading-relaxed uppercase mb-16">
+              Tilt your phone left and right to move the blocks
+            </p>
+
+            {/* Spinner loader */}
+            <div className="mb-4">
+              <svg className="w-5 h-5 animate-spin-loader text-zinc-600" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1" strokeDasharray="16 38" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* Footer text */}
+            <span className="font-mono text-[9px] tracking-[0.25em] text-zinc-500 uppercase animate-pulse">
+              PHYSICS WILL ACTIVATE
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
