@@ -787,20 +787,55 @@ const Hero = () => {
 
       {/* 6.5. Mobile Calibration / Interactivity Overlay */}
       <div 
-        className={`fixed inset-0 bg-black/95 z-[10000] flex flex-col items-center justify-center transition-all duration-500 ${
+        className={`fixed inset-0 bg-black/60 z-[10000] flex items-center justify-center p-6 backdrop-blur-sm transition-all duration-500 ${
           showMobilePrompt ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex flex-col items-center gap-4 text-center px-6">
-          <div className="w-12 h-12 rounded-full border-2 border-amber-500 border-t-transparent animate-spin mb-2" style={{ border: '2px solid #f59e0b', borderTopColor: 'transparent' }} />
-          <span className="font-mono text-xs text-amber-500 tracking-[0.2em] uppercase animate-pulse" style={{ color: '#f59e0b' }}>
-            [ SYSTEM CALIBRATING ]
+        <div 
+          className="flex flex-col items-center gap-5 text-center p-8 bg-[#090a0f]/95 border border-amber-500/30 rounded-2xl shadow-[0_0_60px_rgba(245,158,11,0.2)] max-w-xs w-full transition-transform duration-500"
+          style={{
+            transform: showMobilePrompt ? "scale(1)" : "scale(0.9)",
+          }}
+        >
+          {/* Custom SVG tilting phone illustration */}
+          <svg 
+            viewBox="0 0 64 64" 
+            className="w-16 h-16 animate-pulse mb-2" 
+            fill="none" 
+            stroke="#f59e0b" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            {/* Phone body tilted */}
+            <rect x="22" y="8" width="20" height="48" rx="3.5" transform="rotate(-15 32 32)" />
+            <line x1="28" y1="12" x2="33" y2="12" transform="rotate(-15 32 32)" />
+            <circle cx="32" cy="50" r="1.5" transform="rotate(-15 32 32)" fill="#f59e0b" />
+            {/* Curved arrows left and right */}
+            <path d="M 12,24 C 7,28 7,36 12,40" />
+            <polyline points="9,22 12,24 10,27" />
+            <path d="M 52,40 C 57,36 57,28 52,24" />
+            <polyline points="55,42 52,40 54,37" />
+          </svg>
+
+          <span 
+            className="font-mono text-[10px] text-amber-500 tracking-[0.25em] uppercase font-bold"
+            style={{ color: '#f59e0b' }}
+          >
+            [ GYRO CALIBRATION ]
           </span>
-          <h2 className="font-display font-black text-2xl text-white tracking-tight leading-tight uppercase" style={{ color: '#ffffff' }}>
-            PHYSICS ENGAGED
+          <h2 
+            className="font-display font-black text-2xl text-white tracking-tight uppercase"
+            style={{ color: '#ffffff' }}
+          >
+            PHYSICS ACTIVE
           </h2>
-          <p className="font-mono text-[10px] text-zinc-400 max-w-[240px] leading-relaxed uppercase" style={{ color: '#a1a1aa' }}>
-            TILT YOUR PHONE LEFT & RIGHT TO INTERACT WITH ELEMENTS
+          <div className="w-12 h-[2px] bg-amber-500/50 my-1" style={{ backgroundColor: 'rgba(245, 158, 11, 0.5)' }} />
+          <p 
+            className="font-mono text-[10px] text-zinc-400 leading-relaxed uppercase"
+            style={{ color: '#a1a1aa' }}
+          >
+            TILT YOUR PHONE LEFT &amp; RIGHT TO SLIDE &amp; BOUNCE BLOCKS
           </p>
         </div>
       </div>
