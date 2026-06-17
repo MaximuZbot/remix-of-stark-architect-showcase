@@ -35,23 +35,48 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     
-    // Brief delay to simulate connection handshake
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Construct mailto link
-    const subject = encodeURIComponent(data.subject);
-    const body = encodeURIComponent(`Hello Mohith,\n\n${data.message}\n\n---\nSender: ${data.name}\nContact: ${data.email}`);
-    const mailtoUrl = `mailto:mohithkanna1@gmail.com?subject=${subject}&body=${body}`;
-    
-    toast({
-      title: "CONNECTION ESTABLISHED",
-      description: "Launching system mail client to transmit data packet.",
-    });
-
-    window.location.href = mailtoUrl;
-    
-    reset();
-    setIsSubmitting(false);
+    try {
+      const response = await fetch("https://formspree.io/mohithkanna1@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message
+        })
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "TRANSMISSION SUCCESSFUL",
+          description: "Your message has been routed directly to Mohith's inbox.",
+        });
+        reset();
+      } else {
+        throw new Error("Formspree response not OK");
+      }
+    } catch (error) {
+      console.error("Formspree failed, falling back to mailto client redirection:", error);
+      
+      // Fallback: construct mailto link
+      const subject = encodeURIComponent(data.subject);
+      const body = encodeURIComponent(`Hello Mohith,\n\n${data.message}\n\n---\nSender: ${data.name}\nContact: ${data.email}`);
+      const mailtoUrl = `mailto:mohithkanna1@gmail.com?subject=${subject}&body=${body}`;
+      
+      toast({
+        title: "SYSTEM REDIRECT",
+        description: "Background route failed. Launching local mail client...",
+      });
+      
+      window.location.href = mailtoUrl;
+      reset();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -90,7 +115,7 @@ const Contact = () => {
                     href="mailto:mohithkanna1@gmail.com"
                     className="text-xl text-white hover:text-white/80 transition-colors duration-300 flex items-center gap-3"
                   >
-                    <Mail className="w-5 h-5 text-green-400" />
+                    <Mail className="w-5 h-5 text-white/60" />
                     mohithkanna1@gmail.com
                   </a>
                 </div>
@@ -145,125 +170,125 @@ const Contact = () => {
               <div className="w-full">
                 <div 
                   id="message-form" 
-                  className="scroll-mt-24 w-full bg-black/90 border border-green-500/30 rounded-lg p-6 font-mono relative overflow-hidden shadow-[0_0_25px_rgba(34,197,94,0.15)]"
+                  className="scroll-mt-24 w-full bg-black/40 backdrop-blur-md border border-white/10 rounded-lg p-6 font-mono relative overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:border-white/20 transition-all duration-300"
                 >
                   {/* Scanline effect overlay */}
                   <div 
-                    className="pointer-events-none absolute inset-0 opacity-5"
+                    className="pointer-events-none absolute inset-0 opacity-2"
                     style={{
-                      backgroundImage: "linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%)",
+                      backgroundImage: "linear-gradient(rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 50%)",
                       backgroundSize: "100% 4px"
                     }}
                   />
                   
                   {/* Terminal Header Bar */}
-                  <div className="flex items-center justify-between border-b border-green-500/20 pb-4 mb-6 select-none">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6 select-none">
                     <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-500/75 block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/75 block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-500/75 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-white/20 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-white/20 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-white/20 block" />
                     </div>
-                    <span className="text-[10px] text-green-500/50 uppercase tracking-widest">
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest">
                       session: talk_to_robot.sh
                     </span>
                     <div className="w-8" />
                   </div>
 
                   {/* Status Prompt */}
-                  <div className="text-green-400 text-xs mb-6 space-y-1 select-none leading-relaxed">
-                    <p>guest@mohithkanna:~$ ./talk_to_robot.sh</p>
-                    <p className="text-green-500/40">&gt;&gt; Connecting to target: mohithkanna1@gmail.com</p>
-                    <p className="text-cyan-400">&gt;&gt; Status: SECURE_TUNNEL_ESTABLISHED // ONLINE</p>
+                  <div className="text-white/60 text-xs mb-6 space-y-1 select-none leading-relaxed">
+                    <p><span className="text-white/40">guest@mohithkanna:~$</span> <span className="text-white/80">./talk_to_robot.sh</span></p>
+                    <p className="text-white/30">&gt;&gt; Connecting to target: mohithkanna1@gmail.com</p>
+                    <p className="text-white/50">&gt;&gt; Status: SECURE_TUNNEL_ESTABLISHED // ONLINE</p>
                   </div>
 
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Inputs */}
                     <div className="space-y-2">
-                      <label className="block text-[10px] text-green-500/60 uppercase tracking-wider font-semibold">
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider font-semibold">
                         [01] SELECT SENDER NAME:
                       </label>
-                      <div className="flex items-center gap-2 border-b border-green-500/30 py-2 focus-within:border-cyan-400 transition-colors">
-                        <span className="text-green-500 text-sm select-none">&gt;&nbsp;$</span>
+                      <div className="flex items-center gap-2 border-b border-white/10 py-2 focus-within:border-white/40 transition-colors">
+                        <span className="text-white/30 text-sm select-none">&gt;&nbsp;$</span>
                         <input
                           type="text"
                           placeholder="your name"
                           {...register("name")}
-                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-green-500/20 font-mono focus:ring-0 p-0"
+                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-white/15 font-mono focus:ring-0 p-0"
                         />
                       </div>
                       {errors.name && (
-                        <p className="text-xs text-red-400 mt-1 font-mono">{errors.name.message}</p>
+                        <p className="text-xs text-red-400/70 mt-1 font-mono">{errors.name.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-[10px] text-green-500/60 uppercase tracking-wider font-semibold">
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider font-semibold">
                         [02] SPECIFY RETURN PATH / EMAIL:
                       </label>
-                      <div className="flex items-center gap-2 border-b border-green-500/30 py-2 focus-within:border-cyan-400 transition-colors">
-                        <span className="text-green-500 text-sm select-none">&gt;&nbsp;$</span>
+                      <div className="flex items-center gap-2 border-b border-white/10 py-2 focus-within:border-white/40 transition-colors">
+                        <span className="text-white/30 text-sm select-none">&gt;&nbsp;$</span>
                         <input
                           type="email"
                           placeholder="email@example.com"
                           {...register("email")}
-                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-green-500/20 font-mono focus:ring-0 p-0"
+                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-white/15 font-mono focus:ring-0 p-0"
                         />
                       </div>
                       {errors.email && (
-                        <p className="text-xs text-red-400 mt-1 font-mono">{errors.email.message}</p>
+                        <p className="text-xs text-red-400/70 mt-1 font-mono">{errors.email.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-[10px] text-green-500/60 uppercase tracking-wider font-semibold">
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider font-semibold">
                         [03] DEFINE TASK SUBJECT:
                       </label>
-                      <div className="flex items-center gap-2 border-b border-green-500/30 py-2 focus-within:border-cyan-400 transition-colors">
-                        <span className="text-green-500 text-sm select-none">&gt;&nbsp;$</span>
+                      <div className="flex items-center gap-2 border-b border-white/10 py-2 focus-within:border-white/40 transition-colors">
+                        <span className="text-white/30 text-sm select-none">&gt;&nbsp;$</span>
                         <input
                           type="text"
                           placeholder="project type / consultation"
                           {...register("subject")}
-                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-green-500/20 font-mono focus:ring-0 p-0"
+                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-white/15 font-mono focus:ring-0 p-0"
                         />
                       </div>
                       {errors.subject && (
-                        <p className="text-xs text-red-400 mt-1 font-mono">{errors.subject.message}</p>
+                        <p className="text-xs text-red-400/70 mt-1 font-mono">{errors.subject.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-[10px] text-green-500/60 uppercase tracking-wider font-semibold">
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider font-semibold">
                         [04] TRANSMIT DETAILED PACKET / MESSAGE:
                       </label>
-                      <div className="flex items-start gap-2 border-b border-green-500/30 py-2 focus-within:border-cyan-400 transition-colors">
-                        <span className="text-green-500 text-sm mt-0.5 select-none">&gt;&nbsp;$</span>
+                      <div className="flex items-start gap-2 border-b border-white/10 py-2 focus-within:border-white/40 transition-colors">
+                        <span className="text-white/30 text-sm mt-0.5 select-none">&gt;&nbsp;$</span>
                         <textarea
                           placeholder="describe the system specifications or project vision..."
                           rows={4}
                           {...register("message")}
-                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-green-500/20 font-mono resize-none focus:ring-0 p-0"
+                          className="w-full bg-transparent text-white outline-none border-none text-sm placeholder:text-white/15 font-mono resize-none focus:ring-0 p-0"
                         />
                       </div>
                       {errors.message && (
-                        <p className="text-xs text-red-400 mt-1 font-mono">{errors.message.message}</p>
+                        <p className="text-xs text-red-400/70 mt-1 font-mono">{errors.message.message}</p>
                       )}
                     </div>
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 border border-green-500/40 bg-green-500/10 hover:bg-green-500/20 text-green-400 hover:text-green-300 font-mono transition-all duration-300 disabled:opacity-50 hover:shadow-[0_0_15px_rgba(34,197,94,0.25)] rounded-md"
+                      className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 border border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] text-white font-mono transition-all duration-300 disabled:opacity-50 rounded-md"
                     >
                       {isSubmitting ? (
                         <>
-                          <Loader2 className="w-4 h-4 animate-spin text-green-400" />
+                          <Loader2 className="w-4 h-4 animate-spin text-white/60" />
                           <span>EXECUTING CMD...</span>
                         </>
                       ) : (
                         <>
                           <span>RUN: TRANSMIT_MESSAGE</span>
-                          <Send className="w-4 h-4" />
+                          <Send className="w-4 h-4 text-white/60" />
                         </>
                       )}
                     </button>
