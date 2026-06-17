@@ -8,6 +8,7 @@ import sitePhilono from "@/assets/site-philono.png";
 import siteSchool from "@/assets/site-school.png";
 import siteSunverge from "@/assets/site-sunverge.png";
 import siteMentra from "@/assets/site-mentra.png";
+import siteAyrainn from "@/assets/site-ayrainn.png";
 
 // Technical system diagrams
 import diagramInstagram from "@/assets/diagram-instagram-analytics.jpg";
@@ -66,6 +67,26 @@ export const projects: Project[] = [
       "Brand identity and design system",
       "Responsive across all devices",
       "SEO-optimized structure",
+    ],
+  },
+  {
+    slug: "ayrainn-website",
+    title: "Ayra Inn Kochi",
+    description: "Modern, responsive room booking & listing website designed for a luxury hotel apartment stay in Kalamassery, Kochi.",
+    image: siteAyrainn,
+    category: "Live Website",
+    tier: "live",
+    status: "Live Production Website",
+    liveUrl: "https://ayrainn.in/",
+    techStack: ["React", "Tailwind CSS", "Vite", "Host Coordinated 24/7"],
+    challenge: "Ayra Inn needed a premium, reliable website to present rooms (2BHK, Deluxe, Studio), showcase guest amenities (WiFi, AC, Free Parking), and capture inquiries directly via phone calls.",
+    solution: "Developed a responsive web portal combining Garamond and Inter typography. Implemented check-in date selection tools, WhatsApp/call integrations for booking, and custom listing sliders for room details.",
+    results: "A live corporate web presence that showcases kalamassery apartments, streamlines direct-to-host bookings, and builds brand trust.",
+    features: [
+      "Interactive 2BHK/Deluxe/Studio listing slides",
+      "Check-in/Check-out availability tools",
+      "Direct Call/WhatsApp booking hotlinks",
+      "Clean, modern typography & amenities list",
     ],
   },
   {
