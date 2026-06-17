@@ -411,6 +411,34 @@ html {
   .animate-subtle-text-glow {
     animation: subtleTextGlow 2.5s ease-in-out infinite;
   }
+
+  /* Footer parallax: contact section sits below footer z-level */
+  #contact {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Footer signal sweep animation */
+  .animate-signal-sweep {
+    animation: signalSweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes signalSweep {
+    0% {
+      transform: translateX(-200px);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(1200px);
+      opacity: 0;
+    }
+  }
 }
 
 
