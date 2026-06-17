@@ -14,6 +14,10 @@ import {
   siRazorpay,
   siStripe,
   siVercel,
+  siNetlify,
+  siTypescript,
+  siTailwindcss,
+  siCapacitor,
 } from "simple-icons";
 
 type Tool = {
@@ -34,6 +38,7 @@ const rowOne: Tool[] = [
   { name: "Gemini", path: siGooglegemini.path },
   { name: "Ollama", path: siOllama.path },
   { name: "Python", path: siPython.path },
+  { name: "TypeScript", path: siTypescript.path },
   { name: "YOLO", wordmark: "YOLO" },
   { name: "OpenCV", path: siOpencv.path },
   { name: "Firebase", path: siFirebase.path },
@@ -43,11 +48,14 @@ const rowOne: Tool[] = [
 const rowTwo: Tool[] = [
   { name: "React", path: siReact.path },
   { name: "Next.js", path: siNextdotjs.path },
+  { name: "Tailwind CSS", path: siTailwindcss.path },
   { name: "Docker", path: siDocker.path },
   { name: "GitHub", path: siGithub.path },
+  { name: "Capacitor", path: siCapacitor.path },
   { name: "Razorpay", path: siRazorpay.path },
   { name: "Stripe", path: siStripe.path },
   { name: "Vercel", path: siVercel.path },
+  { name: "Netlify", path: siNetlify.path },
   { name: "Fusion 360", wordmark: "Fusion 360" },
 ];
 

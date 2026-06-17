@@ -22,13 +22,11 @@ const About = () => {
               
               <div className="space-y-8">
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  I'm a Mechatronics Engineer turned solo AI and software builder.
-                  I design and ship end-to-end systems—full-stack apps, automation pipelines, 
-                  and computer vision tools that solve real operational problems.
+                  My background in <strong>Mechatronics Engineering</strong>—the intersection of mechanical systems, electronics, and software—shapes my approach to development. I treat software architectures like physical machines: highly integrated, efficiency-driven, and designed for operational resilience.
                 </p>
                 
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  I work solo, move fast, and focus on delivering production-ready systems.
+                  As a <strong>Solo Product Builder</strong>, I operate under a single, tight loop. By writing the UI, designing the database schema, building serverless automation pipelines, and training custom AI models myself, I eliminate communication overhead and deliver fully integrated systems with speed.
                 </p>
               </div>
             </div>
@@ -43,16 +41,16 @@ const About = () => {
                 <h4 className="text-minimal text-muted-foreground mb-6">WORK PRINCIPLES</h4>
                 <div className="space-y-6">
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">Solo & Fast</h5>
-                    <p className="text-muted-foreground">Direct communication, rapid iteration, no overhead</p>
+                    <h5 className="text-lg font-medium mb-2">Systems Integration</h5>
+                    <p className="text-muted-foreground">Fusing mechanics-level precision with cloud-native scalability. Every endpoint, cron job, and DB query works in concert.</p>
                   </div>
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">End-to-End Delivery</h5>
-                    <p className="text-muted-foreground">From concept to production, handling every layer</p>
+                    <h5 className="text-lg font-medium mb-2">Full-Loop Execution</h5>
+                    <p className="text-muted-foreground">Handling client interviews, UI design, database structures, security, and machine learning deployments concurrently.</p>
                   </div>
                   <div className="border-l-2 border-architectural pl-6">
-                    <h5 className="text-lg font-medium mb-2">Production-Ready</h5>
-                    <p className="text-muted-foreground">Systems built to run reliably in real environments</p>
+                    <h5 className="text-lg font-medium mb-2">Zero-Bloat Engineering</h5>
+                    <p className="text-muted-foreground">Rejecting over-engineered patterns. Focusing purely on performance, runtime stability, and clean, readable codebases.</p>
                   </div>
                 </div>
               </div>

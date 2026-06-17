@@ -6,29 +6,42 @@ const Capabilities = () => {
   const capabilities = [
     {
       number: "01",
-      title: "AI, COMPUTER VISION & AUTOMATION",
+      title: "AI SYSTEMS",
       items: [
-        "Custom YOLOv8 models",
-        "Object detection and visual analytics",
-        "OCR and screenshot-to-data pipelines"
+        "LLM & chatbot integrations",
+        "Retrieval-Augmented Gen (RAG)",
+        "Agentic automated workflows",
+        "Prompt engineering & tuning"
       ]
     },
     {
-      number: "02", 
-      title: "FULL-STACK APP DEVELOPMENT",
+      number: "02",
+      title: "WEB APPLICATIONS",
       items: [
-        "Web apps and internal tools",
-        "Firebase Auth and Firestore",
-        "Role-based dashboards and CRMs"
+        "Full-stack React & Next.js apps",
+        "Internal tools & dashboards",
+        "Custom CRM & calculator apps",
+        "Firebase & relational databases"
       ]
     },
     {
       number: "03",
-      title: "SYSTEMS & WORKFLOW DESIGN",
+      title: "WORKFLOW AUTOMATION",
       items: [
-        "Business process automation",
-        "Internal tools for teams",
-        "Automation-first system architecture"
+        "Screenshot-to-data pipelines",
+        "Custom serverless cron tasks",
+        "Data scraping & API syncs",
+        "Operational process replacement"
+      ]
+    },
+    {
+      number: "04",
+      title: "COMPUTER VISION",
+      items: [
+        "Custom YOLOv8 model training",
+        "Object detection & counting",
+        "Image preprocessing & OCR",
+        "Edge inference optimization"
       ]
     }
   ];
@@ -49,7 +62,7 @@ const Capabilities = () => {
             </h3>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-x-16 gap-y-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-16">
             {capabilities.map((capability, index) => (
               <CapabilityCard key={index} capability={capability} index={index} />
             ))}

@@ -303,18 +303,18 @@ const Hero = () => {
     
     const desktopItems: PhysicsItem[] = [
       { id: "name", type: "text", label: "MOHITH KANNA", width: 900, height: 90, homeX: leftOffset + 450, homeY: height * 0.35 },
-      { id: "sub", type: "subtitle", label: "AI Solo Builder // Computer Vision & Automation", width: 440, height: 40, homeX: leftOffset + 220, homeY: height * 0.48 },
-      { id: "desc", type: "description", label: "I build custom computer vision pipelines (YOLO), coordinate automated business workflows, and ship full-stack applications.", width: 450, height: 65, homeX: leftOffset + 225, homeY: height * 0.59 },
+      { id: "sub", type: "subtitle", label: "AI Systems • Web Apps • Automation • Computer Vision", width: 520, height: 40, homeX: leftOffset + 260, homeY: height * 0.48 },
+      { id: "desc", type: "description", label: "I build intelligent AI systems, custom web applications, and autonomous workflows that run businesses at scale.", width: 450, height: 65, homeX: leftOffset + 225, homeY: height * 0.59 },
       { id: "btn1", type: "button", label: "EXPLORE SYSTEMS", width: 170, height: 48, homeX: leftOffset + 85, homeY: height * 0.72, link: "/projects" },
       { id: "btn2", type: "button", label: "INITIATE CONTACT", width: 170, height: 48, homeX: leftOffset + 270, homeY: height * 0.72, link: "#contact" },
       
       // Floating Tech pills scattered on the right side
-      { id: "pill1", type: "pill", label: "YOLOv8", width: 85, height: 35, homeX: width * 0.70, homeY: height * 0.30 },
-      { id: "pill2", type: "pill", label: "React", width: 85, height: 35, homeX: width * 0.85, homeY: height * 0.35 },
+      { id: "pill1", type: "pill", label: "AI Systems", width: 110, height: 35, homeX: width * 0.70, homeY: height * 0.30 },
+      { id: "pill2", type: "pill", label: "Web Apps", width: 105, height: 35, homeX: width * 0.85, homeY: height * 0.35 },
       { id: "pill3", type: "pill", label: "TypeScript", width: 110, height: 35, homeX: width * 0.73, homeY: height * 0.44 },
       { id: "pill4", type: "pill", label: "Python", width: 90, height: 35, homeX: width * 0.86, homeY: height * 0.52 },
       { id: "pill5", type: "pill", label: "Automation", width: 120, height: 35, homeX: width * 0.70, homeY: height * 0.60 },
-      { id: "pill6", type: "pill", label: "Vibe Coder", width: 115, height: 35, homeX: width * 0.82, homeY: height * 0.68 },
+      { id: "pill6", type: "pill", label: "Computer Vision", width: 150, height: 35, homeX: width * 0.82, homeY: height * 0.68 },
     ];
 
     // Dynamic dimensions for mobile items to prevent clipping/cutoff
@@ -325,17 +325,17 @@ const Hero = () => {
 
     const mobileItems: PhysicsItem[] = [
       { id: "name", type: "text", label: "MOHITH KANNA", width: nameWidth, height: 48, homeX: leftOffset + nameWidth / 2, homeY: height * 0.18 },
-      { id: "sub", type: "subtitle", label: "AI Solo Builder // Computer Vision & Automation", width: subWidth, height: 38, homeX: leftOffset + subWidth / 2, homeY: height * 0.28 },
-      { id: "desc", type: "description", label: "I build custom computer vision pipelines (YOLO) and automated web systems.", width: descWidth, height: 50, homeX: leftOffset + descWidth / 2, homeY: height * 0.38 },
+      { id: "sub", type: "subtitle", label: "AI Systems • Web Apps • Automation • Computer Vision", width: subWidth, height: 38, homeX: leftOffset + subWidth / 2, homeY: height * 0.28 },
+      { id: "desc", type: "description", label: "I build intelligent AI systems, custom web applications, and autonomous workflows.", width: descWidth, height: 50, homeX: leftOffset + descWidth / 2, homeY: height * 0.38 },
       { id: "btn1", type: "button", label: "EXPLORE SYSTEMS", width: btnWidth, height: 42, homeX: leftOffset + btnWidth / 2, homeY: height * 0.48, link: "/projects" },
       { id: "btn2", type: "button", label: "INITIATE CONTACT", width: btnWidth, height: 42, homeX: leftOffset + btnWidth + 12 + btnWidth / 2, homeY: height * 0.48, link: "#contact" },
       
       // Dynamic pill spacing
-      { id: "pill1", type: "pill", label: "YOLOv8", width: 75, height: 32, homeX: leftOffset + 37.5, homeY: height * 0.58 },
-      { id: "pill2", type: "pill", label: "React", width: 70, height: 32, homeX: leftOffset + 75 + 10 + 35, homeY: height * 0.58 },
-      { id: "pill3", type: "pill", label: "TypeScript", width: 95, height: 32, homeX: leftOffset + 155 + 10 + 47.5, homeY: height * 0.58 },
+      { id: "pill1", type: "pill", label: "AI Systems", width: 95, height: 32, homeX: leftOffset + 47.5, homeY: height * 0.58 },
+      { id: "pill2", type: "pill", label: "Web Apps", width: 95, height: 32, homeX: leftOffset + 95 + 8 + 47.5, homeY: height * 0.58 },
+      { id: "pill3", type: "pill", label: "Automation", width: 100, height: 32, homeX: leftOffset + 198 + 8 + 50, homeY: height * 0.58 },
       { id: "pill4", type: "pill", label: "Python", width: 80, height: 32, homeX: leftOffset + 40, homeY: height * 0.66 },
-      { id: "pill5", type: "pill", label: "Automation", width: 100, height: 32, homeX: leftOffset + 80 + 10 + 50, homeY: height * 0.66 },
+      { id: "pill5", type: "pill", label: "Computer Vision", width: 140, height: 32, homeX: leftOffset + 80 + 10 + 70, homeY: height * 0.66 },
     ];
 
     const currentItems = isMobile ? mobileItems : desktopItems;
