@@ -9,11 +9,17 @@ type GLTFResult = GLTF & {
   materials: Record<string, THREE.MeshStandardMaterial>;
 };
 
+// Store caches on globalThis (window) so they persist across Vite HMR hot-reloads in development.
+const originalPositions = ((globalThis as any).__originalPositions = (globalThis as any).__originalPositions || new WeakMap());
+const originalMaterials = ((globalThis as any).__originalMaterials = (globalThis as any).__originalMaterials || new WeakMap());
+
 interface F1CarProps {
   wheelRotation?: number;
   steeringAngle?: number;
   drsProgress?: number;
   activeGroup?: string;
+  cameraRig?: number;
+  viewMode?: "auto" | "showroom" | "cad";
 }
 
 export const F1Car: React.FC<F1CarProps> = ({
@@ -21,9 +27,47 @@ export const F1Car: React.FC<F1CarProps> = ({
   steeringAngle = 0,
   drsProgress = 0,
   activeGroup = "none",
+  cameraRig = 0,
+  viewMode = "auto",
 }) => {
   // Load Red Bull RB20 GLB model from public folder
   const { scene } = useGLTF("/models/2024_redbull_rb20.glb") as GLTFResult;
+
+  const currentDrsProgressRef = useRef(0);
+
+  // Cache initial positions and opacities of all components in the GLB scene once
+  useEffect(() => {
+    if (scene) {
+      scene.traverse((child) => {
+        if (!originalPositions.has(child)) {
+          originalPositions.set(child, child.position.clone());
+        }
+        if (child instanceof THREE.Mesh) {
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          mats.forEach((mat) => {
+            if (mat && !originalMaterials.has(mat)) {
+              originalMaterials.set(mat, {
+                opacity: mat.opacity,
+                transparent: mat.transparent,
+              });
+            }
+          });
+        }
+      });
+    }
+  }, [scene]);
+
+  useEffect(() => {
+    if (scene) {
+      console.log("[GLB Load Status] Red Bull RB20 GLB model loaded successfully!", {
+        name: scene.name,
+        uuid: scene.uuid,
+        childrenCount: scene.children?.length
+      });
+    } else {
+      console.log("[GLB Load Status] GLB model is null or loading...");
+    }
+  }, [scene]);
 
   const nodesRef = useRef<{
     wheels: Record<string, THREE.Object3D | null>;
@@ -126,7 +170,7 @@ export const F1Car: React.FC<F1CarProps> = ({
 
     // 2. Steering Yaw (rotate hubs around local Z axis)
     if (activeGroup === "wheels") {
-      const steer = Math.sin(state.clock.getElapsedTime() * 2.5) * 0.15; // Smooth wobble steering
+      const steer = Math.sin(state.clock.getElapsedTime() * 1.2) * 0.15; // Smooth wobble steering
       if (hubs.lf) hubs.lf.rotation.z = steer;
       if (hubs.rf) hubs.rf.rotation.z = steer;
     } else {
@@ -134,8 +178,88 @@ export const F1Car: React.FC<F1CarProps> = ({
       if (hubs.rf) hubs.rf.rotation.z = 0;
     }
 
-    // 3. DRS Flap lift (rotate around local X axis)
-    if (drsFlap) drsFlap.rotation.x = drsProgress * 0.85;
+    // 3. DRS Flap lift (rotate around local X axis - inverted and flattened for real F1 aerodynamics)
+    currentDrsProgressRef.current = THREE.MathUtils.lerp(
+      currentDrsProgressRef.current,
+      drsProgress,
+      delta * 6.0
+    );
+    if (drsFlap) drsFlap.rotation.x = -currentDrsProgressRef.current * 0.35;
+
+    // 4. Monochrome CAD Wireframe Transition (Scene 7 Climax)
+    const rig = cameraRig || 0;
+    // Accelerate transition so it completes 60% of the way through the scroll, giving the user more time to enjoy the monochrome build
+    let transitionProgress = Math.max(0, Math.min(1, (rig - 5.0) * 1.66)); // Transitions between Scene 6 (rig=5.0) and Scene 7 (rig=6.0)
+
+    // Override transitionProgress if viewMode is forced via UI toggle
+    if (viewMode === "cad") {
+      transitionProgress = 1.0;
+    } else if (viewMode === "showroom") {
+      transitionProgress = 0.0;
+    }
+
+    if (scene) {
+      scene.traverse((child) => {
+        // Ensure all components stay in their original assembled position (reverted dismantling)
+        const initialPos = originalPositions.get(child);
+        if (initialPos) {
+          child.position.copy(initialPos);
+        }
+
+        if (child instanceof THREE.Mesh) {
+          // A. Fade out regular colored materials to transparent ghost volume
+          const mat = child.material as THREE.MeshStandardMaterial;
+          if (mat) {
+            const orig = originalMaterials.get(mat) || { opacity: 1.0, transparent: false };
+            
+            // Restore original transparency state when CAD mode is fully deactivated/inactive
+            mat.transparent = transitionProgress > 0.01 ? true : orig.transparent;
+            // Fade opacity down relative to its initial value (down to 8% of original)
+            mat.opacity = orig.opacity * (1.0 - transitionProgress * 0.92);
+          }
+
+          // B. Fade in the CAD wireframe outline
+          const edges = child.getObjectByName("highlight_edges") as THREE.LineSegments | undefined;
+          if (edges) {
+            const edgeMat = edges.material as THREE.LineBasicMaterial;
+            if (edgeMat) {
+              // Check if component is highlighted by activeGroup
+              let isMatch = false;
+              let current: THREE.Object3D | null = child;
+              while (current) {
+                const parentName = current.name.toLowerCase();
+                if (activeGroup === "frontWingNose" && parentName.includes("nose")) {
+                  isMatch = true;
+                  break;
+                }
+                if (activeGroup === "rearWing" && (parentName.includes("rwing") || parentName.includes("drs"))) {
+                  isMatch = true;
+                  break;
+                }
+                if (activeGroup === "wheels" && (parentName.includes("wheel") || parentName.includes("tire") || parentName.includes("rim") || parentName.includes("hub") || parentName.includes("susp"))) {
+                  isMatch = true;
+                  break;
+                }
+                if (activeGroup === "cockpit" && (parentName.includes("halo") || parentName.includes("steer") || parentName.includes("volant") || parentName.includes("appuitete"))) {
+                  isMatch = true;
+                  break;
+                }
+                current = current.parent;
+              }
+
+              if (isMatch) {
+                edgeMat.color.set("#d97706"); // keep gold highlight
+                edgeMat.opacity = 0.85;
+              } else {
+                // Fade in minimalist charcoal wireframe outline (#57534e)
+                edgeMat.color.set("#57534e");
+                edgeMat.opacity = transitionProgress * 0.45;
+              }
+            }
+          }
+        }
+      });
+    }
   });
 
   return <primitive object={scene} />;

@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
         display: ['"Syne"', "ui-sans-serif", "system-ui", "sans-serif"],
+        foldit: ['"Foldit"', "cursive", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
