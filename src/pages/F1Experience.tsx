@@ -5,55 +5,29 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import F1Scene, { ScrollState } from "@/components/f1/F1Scene";
 import { ArrowLeft, Volume2, VolumeX, Sparkles, HelpCircle } from "lucide-react";
-import { useProgress } from "@react-three/drei";
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
-// Project Data mapping to F1 parts
-const PROJECTS = [
-  {
-    part: "AERODYNAMICS",
-    title: "Project Aero Configurator",
-    tech: "React Three Fiber • WebGL",
-    desc: "A custom 3D aerodynamic editor that models boundary-layer wind-tunnel airflow using custom shaders.",
-    link: "/project/aero",
-  },
-  {
-    part: "POWER UNIT",
-    title: "AI Power Grid Optimizer",
-    tech: "Python • PyTorch • Next.js",
-    desc: "Machine learning control system predicting and balancing hybrid powertrain grid thermal metrics.",
-    link: "/project/powertrain",
-  },
-  {
-    part: "SUSPENSION & CHASSIS",
-    title: "Rigid Body Physics Engine",
-    tech: "TypeScript • Matter.js",
-    desc: "A rigid body physics workspace simulating track tire contact forces and suspension load paths.",
-    link: "/project/physics",
-  },
-  {
-    part: "DRS WING",
-    title: "Active DRS Racing Telemetry",
-    tech: "Node.js • WebSockets • Canvas",
-    desc: "High-speed multiplayer canvas interface showing real-time DRS opening and track speed overlays.",
-    link: "/project/racing-engine",
-  },
-];
+// Technical spec sheet is loaded directly into the final scene spec grid.
 
 export const F1Experience: React.FC = () => {
-  const { active, progress } = useProgress();
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
-  const lenisRef = useRef<any>(null);
+  const lenisRef = useRef<Lenis | null>(null);
   
   const [activeScene, setActiveScene] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [isNarrativeVisible, setIsNarrativeVisible] = useState(true);
 
-  useEffect(() => {
-    setIsNarrativeVisible(true);
-  }, [activeScene]);
+  const scrollToScene = (index: number) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(index * window.innerHeight);
+    } else {
+      window.scrollTo({
+        top: index * window.innerHeight,
+        behavior: "smooth",
+      });
+    }
+  };
 
   // Sound toggles and V6 engine synth references (for soft, elegant background purr)
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -199,7 +173,6 @@ export const F1Experience: React.FC = () => {
       wheelMultiplier: 0.95,
       infinite: false,
     });
-    lenisRef.current = lenis;
 
     let lastTime = 0;
     function raf(time: number) {
@@ -221,6 +194,8 @@ export const F1Experience: React.FC = () => {
     lenis.on("scroll", () => {
       ScrollTrigger.update();
     });
+
+    lenisRef.current = lenis;
 
     // 2. Track mouse position for subtle camera parallax
     const handleMouseMove = (e: MouseEvent) => {
@@ -279,50 +254,50 @@ export const F1Experience: React.FC = () => {
 
       // Segment Scroll Steps across the 700vh height
       
-      // Scene 1 -> 2: Transition to Front Aero (Wheels start to rotate slowly)
+      // Scene 1 -> 2: Transition to Front Aero
       mainTl.to(state, {
         cameraRig: 1.0,
-        carDrive: 0.5,
+        carDrive: 0,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 2 -> 3: Transition to Wheels (Wheels fully rotate)
+      // Scene 2 -> 3: Transition to Wheels (Apply subtle wheel spin)
       mainTl.to(state, {
         cameraRig: 2.0,
-        carDrive: 3.5,
+        carDrive: 1.8, // Subtle display roll speed
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 3 -> 4: Transition to Cockpit & Halo (Wheels continue rotating)
+      // Scene 3 -> 4: Transition to Cockpit & Halo
       mainTl.to(state, {
         cameraRig: 3.0,
-        carDrive: 3.5,
+        carDrive: 1.8,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 4 -> 5: Transition to Pilot View (Wheels continue rotating)
+      // Scene 4 -> 5: Transition to Pilot View (Steering Wheel POV)
       mainTl.to(state, {
         cameraRig: 4.0,
-        carDrive: 3.5,
+        carDrive: 1.8,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 5 -> 6: Transition to Rear Wing & DRS (Wheels rotate faster)
+      // Scene 5 -> 6: Transition to Rear Wing & DRS
       mainTl.to(state, {
         cameraRig: 5.0,
-        carDrive: 6.0,
+        carDrive: 1.8,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 6 -> 7: Transition to Final Showcase (Wagon-wheel stroboscopic reverse effect)
+      // Scene 6 -> 7: Transition to Final Showcase
       mainTl.to(state, {
         cameraRig: 6.0,
-        carDrive: -1.8,
+        carDrive: 1.8,
         ease: "power1.inOut",
         duration: 2,
       });
@@ -338,31 +313,8 @@ export const F1Experience: React.FC = () => {
   }, [soundEnabled]);
 
   return (
-    <div className="relative min-h-screen bg-[#f2f0ea] text-stone-900 overflow-x-hidden select-none font-sans">
+    <div className="relative min-h-screen bg-[#f9f8f6] text-stone-900 overflow-x-hidden select-none font-sans">
       
-      {/* Technical Loading Progress Overlay */}
-      {active && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#f2f0ea] font-mono text-[9px] tracking-[0.25em] text-stone-500 transition-all duration-500">
-          <div className="flex flex-col items-center gap-4 max-w-xs w-full px-6">
-            <span className="font-bold text-stone-900 uppercase">
-              LOADING MODEL
-            </span>
-            <div className="w-full h-[1px] bg-stone-200 relative overflow-hidden rounded-full">
-              <div 
-                className="h-full bg-stone-900 transition-all duration-300 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <span className="text-stone-400">
-              {Math.round(progress)}%
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Subtle organic noise overlay */}
-      <div className="noise-overlay" />
-
       {/* 3D Scene Layer */}
       <F1Scene scrollState={scrollState} />
 
@@ -370,7 +322,7 @@ export const F1Experience: React.FC = () => {
       <div className="fixed top-6 left-6 z-50 flex items-center gap-4">
         <Link
           to="/"
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f2f0ea]/80 backdrop-blur-md text-stone-700 hover:bg-stone-900 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f9f8f6]/80 backdrop-blur-md text-stone-700 hover:bg-stone-900 hover:text-white transition-all cursor-pointer shadow-sm"
         >
           <ArrowLeft size={16} />
         </Link>
@@ -387,64 +339,52 @@ export const F1Experience: React.FC = () => {
       {/* Sound Controller */}
       <button
         onClick={() => setSoundEnabled(!soundEnabled)}
-        className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f2f0ea]/80 backdrop-blur-md text-stone-700 hover:scale-105 transition-all cursor-pointer shadow-sm"
+        className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f9f8f6]/80 backdrop-blur-md text-stone-700 hover:scale-105 transition-all cursor-pointer shadow-sm"
         title={soundEnabled ? "Mute engine purr" : "Unmute engine purr"}
       >
         {soundEnabled ? <Volume2 size={16} className="text-stone-900" /> : <VolumeX size={16} />}
       </button>
 
-      {/* Bottom Monospaced Navigation HUD */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-        <div className="flex items-center gap-8 px-6 py-2.5 rounded-full border border-white/30 bg-white/35 backdrop-blur-md shadow-sm font-mono text-[9px] tracking-widest text-stone-500">
-          <button
-            onClick={() => {
-              if (activeScene > 0 && lenisRef.current) {
-                lenisRef.current.scrollTo((activeScene - 1) * window.innerHeight);
-              }
-            }}
-            className={`flex items-center gap-2 transition-all cursor-pointer ${
-              activeScene > 0 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
-            }`}
-            disabled={activeScene === 0}
-          >
-            ← PREV
-          </button>
+      {/* Bottom Scene Navigation / Pagination HUD */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between w-full max-w-2xl px-6 pointer-events-none font-mono text-[9px] tracking-widest text-[#ffffff] mix-blend-difference select-none">
+        {/* Previous Button */}
+        <button
+          onClick={() => activeScene > 0 && scrollToScene(activeScene - 1)}
+          className={`flex items-center gap-1.5 pointer-events-auto transition-opacity duration-300 ${
+            activeScene > 0 ? "opacity-60 hover:opacity-100 cursor-pointer" : "opacity-0 cursor-default"
+          }`}
+        >
+          <span>←</span> PREVIOUS
+        </button>
 
-          <div className="flex flex-col items-center gap-1.5">
-            <div className="flex gap-2">
-              {[...Array(7)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    if (lenisRef.current) {
-                      lenisRef.current.scrollTo(i * window.innerHeight);
-                    }
-                  }}
-                  className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
-                    activeScene === i ? "bg-stone-950 scale-125" : "bg-stone-300 hover:bg-stone-400"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-[7.5px] font-bold text-stone-900">
-              SCENE {String(activeScene + 1).padStart(2, "0")} / 07
-            </span>
+        {/* Center Indicators */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="flex gap-1.5 pointer-events-auto">
+            {[0, 1, 2, 3, 4, 5, 6].map((idx) => (
+              <button
+                key={idx}
+                onClick={() => scrollToScene(idx)}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer focus:outline-none ${
+                  activeScene === idx ? "bg-[#ffffff] scale-125" : "bg-[#ffffff]/30 hover:bg-[#ffffff]/70"
+                }`}
+                title={`Go to scene ${idx + 1}`}
+              />
+            ))}
           </div>
-
-          <button
-            onClick={() => {
-              if (activeScene < 6 && lenisRef.current) {
-                lenisRef.current.scrollTo((activeScene + 1) * window.innerHeight);
-              }
-            }}
-            className={`flex items-center gap-2 transition-all cursor-pointer ${
-              activeScene < 6 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
-            }`}
-            disabled={activeScene === 6}
-          >
-            NEXT →
-          </button>
+          <span className="uppercase text-[8px] text-[#ffffff]/60 mt-0.5 font-mono">
+            SCENE 0{activeScene + 1} / 07
+          </span>
         </div>
+
+        {/* Next Button */}
+        <button
+          onClick={() => activeScene < 6 && scrollToScene(activeScene + 1)}
+          className={`flex items-center gap-1.5 pointer-events-auto transition-opacity duration-300 ${
+            activeScene < 6 ? "opacity-60 hover:opacity-100 cursor-pointer" : "opacity-0 cursor-default"
+          }`}
+        >
+          NEXT <span>→</span>
+        </button>
       </div>
 
 
@@ -452,22 +392,22 @@ export const F1Experience: React.FC = () => {
       {/* ========================================================
           SCROLLING TARGET WRAPPER
           ======================================================== */}
-      <div ref={scrollWrapperRef} className="relative h-[700vh] w-full">
+      <div ref={scrollWrapperRef} className="relative z-20 h-[700vh] w-full">
         
         {/* SCENE 1: Introduction */}
-        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
+        <section className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out ${
-              activeScene === 0 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`max-w-3xl text-center transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
             }`}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-stone-200/60 bg-[#fbf9f6]/80 backdrop-blur-sm text-stone-500 text-[9px] tracking-widest uppercase font-mono mb-6 shadow-sm">
-              <Sparkles size={10} className="text-amber-600" /> TECHNICAL PRESENTATION
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-white/10 text-white/70 text-[9px] tracking-widest uppercase font-mono mb-6 shadow-sm">
+              <Sparkles size={10} className="text-white/80" /> TECHNICAL PRESENTATION
             </div>
-            <h1 className="text-5xl md:text-7xl font-serif font-normal text-stone-900 tracking-tight leading-tight">
+            <h1 className="text-5xl md:text-7xl font-serif font-normal text-white tracking-tight leading-tight">
               The Geometry of Speed
             </h1>
-            <p className="mt-6 text-stone-500 font-sans text-xs tracking-widest uppercase max-w-md">
+            <p className="mt-6 text-white/70 font-sans text-xs tracking-widest uppercase max-w-md mx-auto">
               An editorial walkthrough of the Red Bull RB20
             </p>
           </div>
@@ -476,239 +416,166 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 2: Aerodynamics */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
-            {isNarrativeVisible ? (
-              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
-                <button
-                  onClick={() => setIsNarrativeVisible(false)}
-                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
-                  title="Hide details"
-                >
-                  [ HIDE ]
-                </button>
-                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                  EXHIBIT SECTION 01 // AIRFLOW
-                </span>
-                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
-                  Front Wing & Nose
-                </h2>
-                <p className="text-stone-600 text-xs leading-relaxed">
-                  The front wing directs high-velocity air around the front wheels and channels it into the underbody tunnels. Every curve and flap angle is calibrated to minimize drag while maximizing front-end bite and downforce.
-                </p>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsNarrativeVisible(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
-                title="Show details"
-              >
-                <HelpCircle size={10} /> SHOW DETAILS
-              </button>
-            )}
+            <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT SECTION 01 // AIRFLOW
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2 mb-4">
+              Front Wing & Nose
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed">
+              The front wing directs high-velocity air around the front wheels and channels it into the underbody tunnels. Every curve and flap angle is calibrated to minimize drag while maximizing front-end bite and downforce.
+            </p>
           </div>
         </section>
 
         {/* SCENE 3: Wheel Technology */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
-            {isNarrativeVisible ? (
-              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
-                <button
-                  onClick={() => setIsNarrativeVisible(false)}
-                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
-                  title="Hide details"
-                >
-                  [ HIDE ]
-                </button>
-                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                  EXHIBIT SECTION 02 // DYNAMICS
-                </span>
-                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
-                  Wheel Assemblies
-                </h2>
-                <p className="text-stone-600 text-xs leading-relaxed">
-                  Tires translate downforce into mechanical traction. Carbon wishbones channel suspension loads directly into the monocoque structure, while brake ducts scoop cooling air to keep carbon-composite discs in their optimal window.
-                </p>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsNarrativeVisible(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
-                title="Show details"
-              >
-                <HelpCircle size={10} /> SHOW DETAILS
-              </button>
-            )}
+            <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT SECTION 02 // DYNAMICS
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2 mb-4">
+              Wheel Assemblies
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed">
+              Tires translate downforce into mechanical traction. Carbon wishbones channel suspension loads directly into the monocoque structure, while brake ducts scoop cooling air to keep carbon-composite discs in their optimal window.
+            </p>
           </div>
         </section>
 
         {/* SCENE 4: Cockpit & Halo */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
-            {isNarrativeVisible ? (
-              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
-                <button
-                  onClick={() => setIsNarrativeVisible(false)}
-                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
-                  title="Hide details"
-                >
-                  [ HIDE ]
-                </button>
-                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                  EXHIBIT SECTION 03 // SAFETY CELL
-                </span>
-                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
-                  The Cockpit & Halo
-                </h2>
-                <p className="text-stone-600 text-xs leading-relaxed">
-                  Designed as an extension of the driver. The titanium Halo safety structure is aerodynamically shaped to direct clean air into the engine airbox above the driver's head, protecting them from large track debris.
-                </p>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsNarrativeVisible(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
-                title="Show details"
-              >
-                <HelpCircle size={10} /> SHOW DETAILS
-              </button>
-            )}
+            <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT SECTION 03 // SAFETY CELL
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2 mb-4">
+              The Cockpit & Halo
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed">
+              Designed as an extension of the driver. The titanium Halo safety structure is aerodynamically shaped to direct clean air into the engine airbox above the driver's head, protecting them from large track debris.
+            </p>
           </div>
         </section>
 
         {/* SCENE 5: Pilot View (Steering Wheel POV) */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
-            {isNarrativeVisible ? (
-              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
-                <button
-                  onClick={() => setIsNarrativeVisible(false)}
-                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
-                  title="Hide details"
-                >
-                  [ HIDE ]
-                </button>
-                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                  EXHIBIT SECTION 04 // PILOT POV
-                </span>
-                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
-                  Driver Cockpit
-                </h2>
-                <p className="text-stone-600 text-xs leading-relaxed">
-                  From the driver's eye level, the steering wheel is the tactical command center. Over 30 rotary dials and buttons control engine mapping modes, entry differentials, and energy recovery, while a central LCD screen feeds critical telemetry at 220 mph.
-                </p>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsNarrativeVisible(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
-                title="Show details"
-              >
-                <HelpCircle size={10} /> SHOW DETAILS
-              </button>
-            )}
+            <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT SECTION 04 // PILOT POV
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2 mb-4">
+              Driver Cockpit
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed">
+              From the driver's eye level, the steering wheel is the tactical command center. Over 30 rotary dials and buttons control engine mapping modes, entry differentials, and energy recovery, while a central LCD screen feeds critical telemetry at 220 mph.
+            </p>
           </div>
         </section>
 
         {/* SCENE 6: Rear Section & DRS */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out mix-blend-difference text-white ${
+              activeScene === 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
-            {isNarrativeVisible ? (
-              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
-                <button
-                  onClick={() => setIsNarrativeVisible(false)}
-                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
-                  title="Hide details"
-                >
-                  [ HIDE ]
-                </button>
-                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                  EXHIBIT SECTION 05 // ACTIVE AERO
-                </span>
-                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
-                  Rear Wing & DRS
-                </h2>
-                <p className="text-stone-600 text-xs leading-relaxed">
-                  The Drag Reduction System (DRS) pivots the main rear wing flap open on straights, cutting aerodynamic drag by over 20%. When closed, the multi-element spoon wing generates massive downforce to stabilize the rear under braking.
-                </p>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsNarrativeVisible(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
-                title="Show details"
-              >
-                <HelpCircle size={10} /> SHOW DETAILS
-              </button>
-            )}
+            <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT SECTION 05 // ACTIVE AERO
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2 mb-4">
+              Rear Wing & DRS
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed">
+              The Drag Reduction System (DRS) pivots the main rear wing flap open on straights, cutting aerodynamic drag by over 20%. When closed, the multi-element spoon wing generates massive downforce to stabilize the rear under braking.
+            </p>
           </div>
         </section>
 
         {/* SCENE 7: Final Showcase & Editorial Portfolio */}
-        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
+        <section className="sticky top-0 h-screen w-full flex flex-col justify-center items-center z-30">
           <div
-            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out ${
-              activeScene === 6 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`w-full max-w-6xl px-8 flex flex-col items-center transition-all duration-1000 ease-out ${
+              activeScene === 6 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT CATALOG // TECHNICAL SPECIFICATIONS
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-6">
-              Engineering Showcase
-            </h2>
-
-            {/* Specifications Specs Sheet Grid */}
-            <div className="w-full max-w-[340px] border-t border-stone-200/60 pt-6 font-mono text-[9px] tracking-widest text-stone-600">
-              {[
-                { name: "Power Unit", value: "Honda RBPTH002 V6 Turbo Hybrid" },
-                { name: "Chassis Structure", value: "Molded carbon-composite monocoque" },
-                { name: "Gearbox", value: "8-Speed direct-shift, hydraulic system" },
-                { name: "Total Weight", value: "798 kg (with driver and instrumentation)" },
-                { name: "Active Aero", value: "DRS Flap (85mm slot gap clearance)" },
-                { name: "Braking System", value: "Carbon-carbon discs with Brembo calipers" }
-              ].map((spec, i) => (
-                <div key={i} className="flex justify-between py-2.5 border-b border-stone-200/30">
-                  <span className="uppercase text-stone-400 mr-4">{spec.name}</span>
-                  <span className="text-stone-900 font-bold uppercase text-right">{spec.value}</span>
-                </div>
-              ))}
+            <div className="text-center mb-6 mix-blend-difference text-white">
+              <span className="text-white/50 text-[9px] font-mono tracking-widest uppercase">
+                EXHIBIT CATALOG // TECHNICAL SPECIFICATION
+              </span>
+              <h2 className="text-4xl md:text-5xl font-serif font-normal text-white mt-2">
+                Engineering Showcase
+              </h2>
+              <p className="text-white/50 text-[9px] font-mono uppercase tracking-widest mt-2">
+                RB20 Technical Specifications & Core Architecture
+              </p>
             </div>
 
-            {/* Sub-footer contact details */}
-            <div className="mt-10 pointer-events-auto">
-              <p className="text-stone-400 text-[8px] font-mono tracking-widest uppercase">
+            {/* Minimalist Monospaced Specs Grid */}
+            <div className="w-full max-w-4xl border-t border-white/20 divide-y divide-white/20 font-mono text-xs mix-blend-difference text-white mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 py-3.5 gap-4">
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">POWER UNIT</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">Red Bull RBPTH002 V6 Turbo Hybrid</span>
+                </div>
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">CHASSIS</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">Carbon-Composite Monocoque</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 py-3.5 gap-4">
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">MIN WEIGHT</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">798 KG (with driver & ballast)</span>
+                </div>
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">DIMENSIONS</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">5,510mm (L) × 2,000mm (W)</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 py-3.5 gap-4 border-b border-white/20">
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">ACTIVE DRS</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">Hydraulic Multi-Element Flap</span>
+                </div>
+                <div className="flex justify-between md:justify-start gap-8 px-2">
+                  <span className="text-white/50 w-32 shrink-0">SUSPENSION</span>
+                  <span className="text-white/90 font-semibold text-right md:text-left">Carbon Wishbone Pull/Pushrod</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sub-footer contact details (Not mixed-blended, so it sits cleanly on off-white or overlay bg) */}
+            <div className="text-center mt-4">
+              <p className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
                 INTERESTED IN COLLABORATING?
               </p>
-              <div className="mt-4 flex gap-4">
+              <div className="mt-3 flex gap-4 justify-center">
                 <a
                   href="/#contact"
-                  className="px-6 py-2 rounded-full border border-stone-950 bg-stone-900 text-white hover:bg-stone-800 text-[10px] font-mono tracking-widest uppercase transition-all shadow-sm cursor-pointer"
+                  className="px-6 py-2 rounded-full border border-stone-950 bg-stone-900 text-white hover:bg-stone-800 text-xs font-bold tracking-wider uppercase transition-all shadow-sm cursor-pointer"
                 >
                   Get In Touch
                 </a>
                 <Link
                   to="/"
-                  className="px-6 py-2 rounded-full border border-stone-200 text-stone-600 hover:text-stone-900 text-[10px] font-mono tracking-widest uppercase transition-all shadow-sm"
+                  className="px-6 py-2 rounded-full border border-stone-200 text-stone-600 hover:text-stone-900 bg-[#f9f8f6]/90 hover:bg-stone-50 text-xs font-bold tracking-wider uppercase transition-all shadow-sm cursor-pointer"
                 >
                   Classic Portfolio
                 </Link>
