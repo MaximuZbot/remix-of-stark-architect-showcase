@@ -18,6 +18,10 @@ const Navigation = () => {
           <Link to="/projects" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             PROJECTS
           </Link>
+          <div className="text-minimal text-muted-foreground/50 font-semibold tracking-wider flex items-center gap-1.5 cursor-not-allowed select-none" title="Coming Soon">
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"></span>
+            🏎️ F1 3D (COMING SOON)
+          </div>
           <Link to="/#capabilities" className="text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
             CAPABILITIES
           </Link>
@@ -53,6 +57,9 @@ const Navigation = () => {
             <Link to="/projects" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               PROJECTS
             </Link>
+            <div className="block text-minimal text-muted-foreground/50 font-semibold cursor-not-allowed select-none" title="Coming Soon">
+              🏎️ F1 3D EXPERIENCE (COMING SOON)
+            </div>
             <Link to="/#capabilities" onClick={closeMenu} className="block text-minimal text-muted-foreground hover:text-foreground transition-colors duration-300">
               CAPABILITIES
             </Link>

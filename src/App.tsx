@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import ProjectDetail from "./pages/ProjectDetail";
 import Projects from "./pages/Projects";
+import F1Experience from "./pages/F1Experience";
 import NotFound from "./pages/NotFound";
 import ScrollToHash from "./components/ScrollToHash";
 
@@ -20,6 +21,7 @@ const App = () => (
         <ScrollToHash />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/f1" element={<F1Experience />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/work" element={<Navigate to="/projects" replace />} />
           <Route path="/services" element={<Navigate to="/#capabilities" replace />} />
