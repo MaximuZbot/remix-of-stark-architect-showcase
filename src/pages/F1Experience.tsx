@@ -73,87 +73,7 @@ export const F1Experience: React.FC = () => {
     activeGroup: "none",
   });
 
-  // Calculate live telemetry values based on scroll progress and active scene
-  const telemetryData = useMemo(() => {
-    let speed = 0;
-    let rpm = 0;
-    let drsStatus = "CLOSED";
-    let drsColor = "text-stone-400 border-stone-200 bg-stone-50/20";
-    let tyreTempLF = 78;
-    let tyreTempRF = 78;
-    let tyreTempLR = 76;
-    let tyreTempRR = 76;
-    let gForceX = 0.0;
-    let gForceY = 0.0;
 
-    const p = scrollProgress;
-
-    if (activeScene === 0) {
-      speed = 0;
-      rpm = 1200;
-    } else if (activeScene === 1) {
-      // Aerodynamics
-      const factor = Math.min(1.0, Math.max(0.0, p / 0.28));
-      speed = Math.floor(80 + factor * 110);
-      rpm = Math.floor(4200 + factor * 4600);
-      tyreTempLF = 82;
-      tyreTempRF = 83;
-      tyreTempLR = 80;
-      tyreTempRR = 81;
-      gForceX = 0.1;
-      gForceY = 0.4;
-    } else if (activeScene === 2) {
-      // Wheels
-      const factor = Math.min(1.0, Math.max(0.0, (p - 0.28) / (0.42 - 0.28)));
-      speed = 190;
-      rpm = 9800;
-      tyreTempLF = Math.floor(82 + factor * 20); // climbs to 102
-      tyreTempRF = Math.floor(83 + factor * 20); // climbs to 103
-      tyreTempLR = Math.floor(80 + factor * 20); // climbs to 100
-      tyreTempRR = Math.floor(81 + factor * 21); // climbs to 102
-      gForceX = -0.3;
-      gForceY = 0.8;
-    } else if (activeScene === 3) {
-      // Cockpit & Halo
-      const factor = Math.min(1.0, Math.max(0.0, (p - 0.42) / (0.56 - 0.42)));
-      speed = Math.floor(190 + factor * 40); // 190 - 230
-      rpm = Math.floor(9800 + factor * 1400); // 9800 - 11200
-      tyreTempLF = 102;
-      tyreTempRF = 103;
-      tyreTempLR = 100;
-      tyreTempRR = 102;
-      gForceX = 0.2;
-      gForceY = 0.5;
-    } else if (activeScene === 4) {
-      // Pilot POV (Steering Wheel)
-      const factor = Math.min(1.0, Math.max(0.0, (p - 0.56) / (0.70 - 0.56)));
-      speed = Math.floor(230 + factor * 55); // 230 - 285
-      rpm = Math.floor(11200 + factor * 600); // 11200 - 11800
-      tyreTempLF = 101;
-      tyreTempRF = 101;
-      tyreTempLR = 99;
-      tyreTempRR = 100;
-      gForceX = 0.4;
-      gForceY = 1.1;
-    } else if (activeScene === 5) {
-      // Rear Wing & DRS (speed/RPM spike as DRS opens!)
-      const factor = Math.min(1.0, Math.max(0.0, (p - 0.70) / (0.85 - 0.70)));
-      speed = Math.floor(285 + factor * 59); // 285 - 344 km/h!
-      rpm = Math.floor(11800 + factor * 1050); // 11800 - 12850 rpm!
-      drsStatus = factor > 0.1 ? "ACTIVE" : "CLOSED";
-      drsColor = factor > 0.1 
-        ? "text-emerald-600 border-emerald-400/30 bg-emerald-500/10 animate-pulse" 
-        : "text-stone-400 border-stone-200 bg-stone-50/20";
-      tyreTempLF = 100;
-      tyreTempRF = 100;
-      tyreTempLR = 98;
-      tyreTempRR = 99;
-      gForceX = 0.0;
-      gForceY = 0.2;
-    }
-
-    return { speed, rpm, drsStatus, drsColor, tyreTempLF, tyreTempRF, tyreTempLR, tyreTempRR, gForceX, gForceY };
-  }, [scrollProgress, activeScene]);
 
   // Web Audio Synth for a soft, elegant background V6 hybrid purr
   const startSynth = () => {
@@ -446,73 +366,7 @@ export const F1Experience: React.FC = () => {
         SCROLL SLOWLY TO EXPLORE ENGINEERING DETAILS
       </div>
 
-      {/* Dynamic F1 Telemetry HUD Overlay */}
-      <div
-        className={`fixed right-6 top-24 z-40 w-64 border border-stone-200/40 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl p-5 shadow-lg select-none pointer-events-none transition-all duration-700 ease-out font-mono text-stone-800 ${
-          activeScene > 0 && activeScene < 6 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12 pointer-events-none"
-        }`}
-      >
-        <div className="flex items-center justify-between border-b border-stone-200/50 pb-2 mb-3">
-          <span className="text-[9px] font-bold tracking-widest text-stone-500 uppercase">SYS TELEMETRY FEED</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        </div>
 
-        <div className="flex justify-between items-baseline mb-4">
-          <div>
-            <span className="text-3xl font-normal font-sans tracking-tight tabular-nums">{telemetryData.speed}</span>
-            <span className="text-[9px] text-stone-500 ml-1">KM/H</span>
-          </div>
-          <div className="text-right">
-            <span className="text-sm font-normal tabular-nums">{telemetryData.rpm}</span>
-            <span className="text-[8px] text-stone-400 block uppercase font-mono">RPM</span>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <div className="text-[8px] text-stone-400 uppercase mb-2">TYRE CORE TEMP</div>
-          <div className="grid grid-cols-2 gap-2 text-center text-[10px]">
-            <div className={`p-1.5 border rounded-lg transition-colors duration-300 ${
-              telemetryData.tyreTempLF > 95 ? "bg-amber-50/60 border-amber-300/40 text-amber-700 font-bold" : "bg-sky-50/30 border-stone-200/50 text-stone-600"
-            }`}>
-              <span className="block text-[8px] text-stone-400">FL</span>
-              {telemetryData.tyreTempLF}°C
-            </div>
-            <div className={`p-1.5 border rounded-lg transition-colors duration-300 ${
-              telemetryData.tyreTempRF > 95 ? "bg-amber-50/60 border-amber-300/40 text-amber-700 font-bold" : "bg-sky-50/30 border-stone-200/50 text-stone-600"
-            }`}>
-              <span className="block text-[8px] text-stone-400">FR</span>
-              {telemetryData.tyreTempRF}°C
-            </div>
-            <div className={`p-1.5 border rounded-lg transition-colors duration-300 ${
-              telemetryData.tyreTempLR > 95 ? "bg-amber-50/60 border-amber-300/40 text-amber-700 font-bold" : "bg-sky-50/30 border-stone-200/50 text-stone-600"
-            }`}>
-              <span className="block text-[8px] text-stone-400">RL</span>
-              {telemetryData.tyreTempLR}°C
-            </div>
-            <div className={`p-1.5 border rounded-lg transition-colors duration-300 ${
-              telemetryData.tyreTempRR > 95 ? "bg-amber-50/60 border-amber-300/40 text-amber-700 font-bold" : "bg-sky-50/30 border-stone-200/50 text-stone-600"
-            }`}>
-              <span className="block text-[8px] text-stone-400">RR</span>
-              {telemetryData.tyreTempRR}°C
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 border-t border-stone-200/50 pt-3 text-[10px]">
-          <div>
-            <span className="block text-[8px] text-stone-400 uppercase mb-1">DRS STATUS</span>
-            <span className={`inline-block px-2 py-0.5 rounded border text-[9px] uppercase tracking-wider font-bold transition-all duration-300 ${telemetryData.drsColor}`}>
-              {telemetryData.drsStatus}
-            </span>
-          </div>
-          <div>
-            <span className="block text-[8px] text-stone-400 uppercase mb-1">LAT / LONG G</span>
-            <span className="text-stone-700 tabular-nums">
-              {telemetryData.gForceX.toFixed(1)}G / {telemetryData.gForceY.toFixed(1)}G
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* ========================================================
           SCROLLING TARGET WRAPPER
@@ -522,7 +376,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 1: Introduction */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none">
           <div
-            className={`max-w-3xl text-center p-8 md:p-12 mx-4 border border-stone-200/35 bg-[#f9f8f6]/85 backdrop-blur-md rounded-3xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
+            className={`max-w-3xl text-center transition-all duration-1000 ease-out ${
               activeScene === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
             }`}
           >
@@ -541,7 +395,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 2: Aerodynamics */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
               activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
@@ -558,10 +412,10 @@ export const F1Experience: React.FC = () => {
         </section>
 
         {/* SCENE 3: Wheel Technology */}
-        <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
+        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
             <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
@@ -577,10 +431,10 @@ export const F1Experience: React.FC = () => {
         </section>
 
         {/* SCENE 4: Cockpit & Halo */}
-        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
+        <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+              activeScene === 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
             <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
@@ -598,8 +452,8 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 5: Pilot View (Steering Wheel POV) */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
-              activeScene === 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+              activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
             <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
@@ -617,7 +471,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 6: Rear Section & DRS */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
+            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
               activeScene === 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
@@ -640,7 +494,7 @@ export const F1Experience: React.FC = () => {
               activeScene === 6 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
             }`}
           >
-            <div className="text-center mb-10 p-6 border border-stone-200/20 bg-[#f9f8f6]/85 backdrop-blur-sm rounded-2xl shadow-md max-w-xl">
+            <div className="text-center mb-10">
               <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
                 EXHIBIT CATALOG // TECHNICAL PORTFOLIO
               </span>
