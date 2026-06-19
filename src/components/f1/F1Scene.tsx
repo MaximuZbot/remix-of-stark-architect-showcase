@@ -2,6 +2,7 @@ import React, { useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import F1Car from "./F1Car";
+import AirflowStreamlines from "./AirflowStreamlines";
 
 export interface ScrollState {
   progress: number; // overall page scroll progress (0-1)
@@ -29,7 +30,7 @@ const KEYFRAMES = [
   { pos: [2.5, 0.6, 2.8], target: [0.83, 0.35, 1.95] },       // Scene 3: Wheels (Front Right Wheel, naturally right-shifted)
   { pos: [1.2, 1.5, 1.9], target: [-0.4, 0.70, 0.84] },       // Scene 4: Cockpit (Halo, shifted target X to -0.4, car moves left)
   { pos: [0.0, 0.82, 0.2], target: [0.0, 0.68, 1.2] },        // Scene 5: Pilot View (Steering Wheel POV, looking forward)
-  { pos: [2.2, 1.1, -3.2], target: [-0.5, 0.70, -1.96] },      // Scene 6: Rear Wing (Shifted target X to -0.5, wing moves left)
+  { pos: [1.7, 1.0, -2.8], target: [-0.4, 0.65, -1.9] },       // Scene 6: Rear Wing (Framed closer/larger, shifted left)
   { pos: [3.3, 0.75, 3.9], target: [-1.3, 0.22, 0.3] }         // Scene 7: Showcase (Shifted target X to -1.3 to move car right, leaving left side open)
 ];
 
@@ -75,6 +76,9 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
 
   return (
     <group>
+      {/* Aerodynamic Wind Tunnel Overlay */}
+      <AirflowStreamlines speedFactor={scrollState.current.carDrive} />
+
       {/* 3D Model: F1 Car */}
       <group ref={carGroupRef}>
         <F1Car

@@ -47,6 +47,11 @@ export const F1Experience: React.FC = () => {
   
   const [activeScene, setActiveScene] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isNarrativeVisible, setIsNarrativeVisible] = useState(true);
+
+  useEffect(() => {
+    setIsNarrativeVisible(true);
+  }, [activeScene]);
 
   // Sound toggles and V6 engine synth references (for soft, elegant background purr)
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -272,50 +277,50 @@ export const F1Experience: React.FC = () => {
 
       // Segment Scroll Steps across the 700vh height
       
-      // Scene 1 -> 2: Transition to Front Aero
+      // Scene 1 -> 2: Transition to Front Aero (Wheels start to rotate slowly)
       mainTl.to(state, {
         cameraRig: 1.0,
-        carDrive: 0,
+        carDrive: 0.5,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 2 -> 3: Transition to Wheels (Apply subtle wheel spin)
+      // Scene 2 -> 3: Transition to Wheels (Wheels fully rotate)
       mainTl.to(state, {
         cameraRig: 2.0,
-        carDrive: 1.8, // Subtle display roll speed
+        carDrive: 3.5,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 3 -> 4: Transition to Cockpit & Halo
+      // Scene 3 -> 4: Transition to Cockpit & Halo (Wheels continue rotating)
       mainTl.to(state, {
         cameraRig: 3.0,
-        carDrive: 1.8,
+        carDrive: 3.5,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 4 -> 5: Transition to Pilot View (Steering Wheel POV)
+      // Scene 4 -> 5: Transition to Pilot View (Wheels continue rotating)
       mainTl.to(state, {
         cameraRig: 4.0,
-        carDrive: 1.8,
+        carDrive: 3.5,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 5 -> 6: Transition to Rear Wing & DRS
+      // Scene 5 -> 6: Transition to Rear Wing & DRS (Wheels rotate faster)
       mainTl.to(state, {
         cameraRig: 5.0,
-        carDrive: 1.8,
+        carDrive: 6.0,
         ease: "power1.inOut",
         duration: 2,
       });
 
-      // Scene 6 -> 7: Transition to Final Showcase
+      // Scene 6 -> 7: Transition to Final Showcase (Wagon-wheel stroboscopic reverse effect)
       mainTl.to(state, {
         cameraRig: 6.0,
-        carDrive: 1.8,
+        carDrive: -1.8,
         ease: "power1.inOut",
         duration: 2,
       });
@@ -331,8 +336,11 @@ export const F1Experience: React.FC = () => {
   }, [soundEnabled]);
 
   return (
-    <div className="relative min-h-screen bg-[#f9f8f6] text-stone-900 overflow-x-hidden select-none font-sans">
+    <div className="relative min-h-screen bg-[#f2f0ea] text-stone-900 overflow-x-hidden select-none font-sans">
       
+      {/* Subtle organic noise overlay */}
+      <div className="noise-overlay" />
+
       {/* 3D Scene Layer */}
       <F1Scene scrollState={scrollState} />
 
@@ -340,7 +348,7 @@ export const F1Experience: React.FC = () => {
       <div className="fixed top-6 left-6 z-50 flex items-center gap-4">
         <Link
           to="/"
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f9f8f6]/80 backdrop-blur-md text-stone-700 hover:bg-stone-900 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f2f0ea]/80 backdrop-blur-md text-stone-700 hover:bg-stone-900 hover:text-white transition-all cursor-pointer shadow-sm"
         >
           <ArrowLeft size={16} />
         </Link>
@@ -357,62 +365,64 @@ export const F1Experience: React.FC = () => {
       {/* Sound Controller */}
       <button
         onClick={() => setSoundEnabled(!soundEnabled)}
-        className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f9f8f6]/80 backdrop-blur-md text-stone-700 hover:scale-105 transition-all cursor-pointer shadow-sm"
+        className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-[#f2f0ea]/80 backdrop-blur-md text-stone-700 hover:scale-105 transition-all cursor-pointer shadow-sm"
         title={soundEnabled ? "Mute engine purr" : "Unmute engine purr"}
       >
         {soundEnabled ? <Volume2 size={16} className="text-stone-900" /> : <VolumeX size={16} />}
       </button>
 
       {/* Bottom Monospaced Navigation HUD */}
-      <div className="fixed bottom-6 left-0 right-0 z-50 px-12 md:px-24 flex items-center justify-between font-mono text-[9px] tracking-widest text-stone-500 pointer-events-auto">
-        <button
-          onClick={() => {
-            if (activeScene > 0 && lenisRef.current) {
-              lenisRef.current.scrollTo((activeScene - 1) * window.innerHeight);
-            }
-          }}
-          className={`flex items-center gap-2 transition-all cursor-pointer ${
-            activeScene > 0 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
-          }`}
-          disabled={activeScene === 0}
-        >
-          ← PREVIOUS
-        </button>
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+        <div className="flex items-center gap-8 px-6 py-2.5 rounded-full border border-white/30 bg-white/35 backdrop-blur-md shadow-sm font-mono text-[9px] tracking-widest text-stone-500">
+          <button
+            onClick={() => {
+              if (activeScene > 0 && lenisRef.current) {
+                lenisRef.current.scrollTo((activeScene - 1) * window.innerHeight);
+              }
+            }}
+            className={`flex items-center gap-2 transition-all cursor-pointer ${
+              activeScene > 0 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
+            }`}
+            disabled={activeScene === 0}
+          >
+            ← PREV
+          </button>
 
-        <div className="flex flex-col items-center gap-1.5">
-          <div className="flex gap-2">
-            {[...Array(7)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  if (lenisRef.current) {
-                    lenisRef.current.scrollTo(i * window.innerHeight);
-                  }
-                }}
-                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
-                  activeScene === i ? "bg-stone-950 scale-125" : "bg-stone-300 hover:bg-stone-400"
-                }`}
-              />
-            ))}
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="flex gap-2">
+              {[...Array(7)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (lenisRef.current) {
+                      lenisRef.current.scrollTo(i * window.innerHeight);
+                    }
+                  }}
+                  className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                    activeScene === i ? "bg-stone-950 scale-125" : "bg-stone-300 hover:bg-stone-400"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-[7.5px] font-bold text-stone-900">
+              SCENE {String(activeScene + 1).padStart(2, "0")} / 07
+            </span>
           </div>
-          <span className="text-[8px] font-bold text-stone-900">
-            SCENE {String(activeScene + 1).padStart(2, "0")} / 07
-          </span>
-        </div>
 
-        <button
-          onClick={() => {
-            if (activeScene < 6 && lenisRef.current) {
-              lenisRef.current.scrollTo((activeScene + 1) * window.innerHeight);
-            }
-          }}
-          className={`flex items-center gap-2 transition-all cursor-pointer ${
-            activeScene < 6 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
-          }`}
-          disabled={activeScene === 6}
-        >
-          NEXT →
-        </button>
+          <button
+            onClick={() => {
+              if (activeScene < 6 && lenisRef.current) {
+                lenisRef.current.scrollTo((activeScene + 1) * window.innerHeight);
+              }
+            }}
+            className={`flex items-center gap-2 transition-all cursor-pointer ${
+              activeScene < 6 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
+            }`}
+            disabled={activeScene === 6}
+          >
+            NEXT →
+          </button>
+        </div>
       </div>
 
 
@@ -444,95 +454,190 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 2: Aerodynamics */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
-              activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
+              activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT SECTION 01 // AIRFLOW
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-4">
-              Front Wing & Nose
-            </h2>
-            <p className="text-stone-600 text-xs leading-relaxed">
-              The front wing directs high-velocity air around the front wheels and channels it into the underbody tunnels. Every curve and flap angle is calibrated to minimize drag while maximizing front-end bite and downforce.
-            </p>
+            {isNarrativeVisible ? (
+              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
+                <button
+                  onClick={() => setIsNarrativeVisible(false)}
+                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
+                  title="Hide details"
+                >
+                  [ HIDE ]
+                </button>
+                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+                  EXHIBIT SECTION 01 // AIRFLOW
+                </span>
+                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
+                  Front Wing & Nose
+                </h2>
+                <p className="text-stone-600 text-xs leading-relaxed">
+                  The front wing directs high-velocity air around the front wheels and channels it into the underbody tunnels. Every curve and flap angle is calibrated to minimize drag while maximizing front-end bite and downforce.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsNarrativeVisible(true)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
+                title="Show details"
+              >
+                <HelpCircle size={10} /> SHOW DETAILS
+              </button>
+            )}
           </div>
         </section>
 
         {/* SCENE 3: Wheel Technology */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
-              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
+              activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT SECTION 02 // DYNAMICS
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-4">
-              Wheel Assemblies
-            </h2>
-            <p className="text-stone-600 text-xs leading-relaxed">
-              Tires translate downforce into mechanical traction. Carbon wishbones channel suspension loads directly into the monocoque structure, while brake ducts scoop cooling air to keep carbon-composite discs in their optimal window.
-            </p>
+            {isNarrativeVisible ? (
+              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
+                <button
+                  onClick={() => setIsNarrativeVisible(false)}
+                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
+                  title="Hide details"
+                >
+                  [ HIDE ]
+                </button>
+                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+                  EXHIBIT SECTION 02 // DYNAMICS
+                </span>
+                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
+                  Wheel Assemblies
+                </h2>
+                <p className="text-stone-600 text-xs leading-relaxed">
+                  Tires translate downforce into mechanical traction. Carbon wishbones channel suspension loads directly into the monocoque structure, while brake ducts scoop cooling air to keep carbon-composite discs in their optimal window.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsNarrativeVisible(true)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
+                title="Show details"
+              >
+                <HelpCircle size={10} /> SHOW DETAILS
+              </button>
+            )}
           </div>
         </section>
 
         {/* SCENE 4: Cockpit & Halo */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
-              activeScene === 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
+              activeScene === 3 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT SECTION 03 // SAFETY CELL
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-4">
-              The Cockpit & Halo
-            </h2>
-            <p className="text-stone-600 text-xs leading-relaxed">
-              Designed as an extension of the driver. The titanium Halo safety structure is aerodynamically shaped to direct clean air into the engine airbox above the driver's head, protecting them from large track debris.
-            </p>
+            {isNarrativeVisible ? (
+              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
+                <button
+                  onClick={() => setIsNarrativeVisible(false)}
+                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
+                  title="Hide details"
+                >
+                  [ HIDE ]
+                </button>
+                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+                  EXHIBIT SECTION 03 // SAFETY CELL
+                </span>
+                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
+                  The Cockpit & Halo
+                </h2>
+                <p className="text-stone-600 text-xs leading-relaxed">
+                  Designed as an extension of the driver. The titanium Halo safety structure is aerodynamically shaped to direct clean air into the engine airbox above the driver's head, protecting them from large track debris.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsNarrativeVisible(true)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
+                title="Show details"
+              >
+                <HelpCircle size={10} /> SHOW DETAILS
+              </button>
+            )}
           </div>
         </section>
 
         {/* SCENE 5: Pilot View (Steering Wheel POV) */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
-              activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
+              activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT SECTION 04 // PILOT POV
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-4">
-              Driver Cockpit
-            </h2>
-            <p className="text-stone-600 text-xs leading-relaxed">
-              From the driver's eye level, the steering wheel is the tactical command center. Over 30 rotary dials and buttons control engine mapping modes, entry differentials, and energy recovery, while a central LCD screen feeds critical telemetry at 220 mph.
-            </p>
+            {isNarrativeVisible ? (
+              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
+                <button
+                  onClick={() => setIsNarrativeVisible(false)}
+                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
+                  title="Hide details"
+                >
+                  [ HIDE ]
+                </button>
+                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+                  EXHIBIT SECTION 04 // PILOT POV
+                </span>
+                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
+                  Driver Cockpit
+                </h2>
+                <p className="text-stone-600 text-xs leading-relaxed">
+                  From the driver's eye level, the steering wheel is the tactical command center. Over 30 rotary dials and buttons control engine mapping modes, entry differentials, and energy recovery, while a central LCD screen feeds critical telemetry at 220 mph.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsNarrativeVisible(true)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
+                title="Show details"
+              >
+                <HelpCircle size={10} /> SHOW DETAILS
+              </button>
+            )}
           </div>
         </section>
 
         {/* SCENE 6: Rear Section & DRS */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
-              activeScene === 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out pointer-events-auto ${
+              activeScene === 5 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10 pointer-events-none"
             }`}
           >
-            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-              EXHIBIT SECTION 05 // ACTIVE AERO
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-4">
-              Rear Wing & DRS
-            </h2>
-            <p className="text-stone-600 text-xs leading-relaxed">
-              The Drag Reduction System (DRS) pivots the main rear wing flap open on straights, cutting aerodynamic drag by over 20%. When closed, the multi-element spoon wing generates massive downforce to stabilize the rear under braking.
-            </p>
+            {isNarrativeVisible ? (
+              <div className="bg-white/35 backdrop-blur-md border border-white/30 p-6 rounded-xl shadow-sm relative group">
+                <button
+                  onClick={() => setIsNarrativeVisible(false)}
+                  className="absolute top-4 right-4 text-[9px] font-mono text-stone-400 hover:text-stone-900 transition-colors opacity-60 hover:opacity-100 cursor-pointer"
+                  title="Hide details"
+                >
+                  [ HIDE ]
+                </button>
+                <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+                  EXHIBIT SECTION 05 // ACTIVE AERO
+                </span>
+                <h2 className="text-3xl font-serif font-normal text-stone-900 mt-2 mb-4">
+                  Rear Wing & DRS
+                </h2>
+                <p className="text-stone-600 text-xs leading-relaxed">
+                  The Drag Reduction System (DRS) pivots the main rear wing flap open on straights, cutting aerodynamic drag by over 20%. When closed, the multi-element spoon wing generates massive downforce to stabilize the rear under braking.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsNarrativeVisible(true)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 bg-white/40 backdrop-blur-md text-stone-600 hover:bg-stone-900 hover:text-white transition-all shadow-sm cursor-pointer text-[9px] font-mono tracking-wider"
+                title="Show details"
+              >
+                <HelpCircle size={10} /> SHOW DETAILS
+              </button>
+            )}
           </div>
         </section>
 

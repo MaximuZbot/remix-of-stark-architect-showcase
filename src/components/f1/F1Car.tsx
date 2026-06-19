@@ -119,10 +119,10 @@ export const F1Car: React.FC<F1CarProps> = ({
 
     // 1. Wheel Rotation (spin around local X axis dynamically based on scroll drive speed factor)
     wheelAngleRef.current -= delta * wheelRotation * 2.5;
-    if (wheels.lf) wheels.lf.rotation.x = wheelAngleRef.current;
-    if (wheels.rf) wheels.rf.rotation.x = -wheelAngleRef.current; // Inverted for right side
-    if (wheels.rr) wheels.rr.rotation.x = -wheelAngleRef.current; // Inverted for right side
-    if (wheels.lr) wheels.lr.rotation.x = wheelAngleRef.current;
+    if (wheels.lf) wheels.lf.rotation.x = -wheelAngleRef.current; // Synchronized forward spin
+    if (wheels.rf) wheels.rf.rotation.x = -wheelAngleRef.current; // Synchronized forward spin
+    if (wheels.rr) wheels.rr.rotation.x = -wheelAngleRef.current; // Synchronized forward spin
+    if (wheels.lr) wheels.lr.rotation.x = -wheelAngleRef.current; // Synchronized forward spin
 
     // 2. Steering Yaw (rotate hubs around local Z axis)
     if (activeGroup === "wheels") {
