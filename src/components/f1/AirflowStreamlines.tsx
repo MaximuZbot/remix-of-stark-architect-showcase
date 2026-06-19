@@ -12,7 +12,6 @@ const StreamlineCurve: React.FC<{ points: THREE.Vector3[]; speedFactor: number; 
   speedFactor,
   color = "#ca8a04", // High-end gold/amber streamline
 }) => {
-  const lineRef = useRef<THREE.Line>(null);
   const materialRef = useRef<THREE.LineDashedMaterial>(null);
 
   const geometry = useMemo(() => {
@@ -20,6 +19,27 @@ const StreamlineCurve: React.FC<{ points: THREE.Vector3[]; speedFactor: number; 
     const curvePoints = curve.getPoints(60);
     return new THREE.BufferGeometry().setFromPoints(curvePoints);
   }, [points]);
+
+  // Create THREE.LineDashedMaterial and THREE.Line inside useMemo to bypass tagger injection
+  const [line, material] = useMemo(() => {
+    const mat = new THREE.LineDashedMaterial({
+      color: color,
+      dashSize: 0.25,
+      gapSize: 0.18,
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false,
+      linewidth: 1,
+    });
+    const ln = new THREE.Line(geometry, mat);
+    ln.computeLineDistances();
+    return [ln, mat];
+  }, [geometry, color]);
+
+  // Keep references updated for animation in useFrame
+  React.useEffect(() => {
+    materialRef.current = material;
+  }, [material]);
 
   useFrame((state, delta) => {
     if (materialRef.current) {
@@ -40,26 +60,7 @@ const StreamlineCurve: React.FC<{ points: THREE.Vector3[]; speedFactor: number; 
     }
   });
 
-  React.useEffect(() => {
-    if (lineRef.current) {
-      lineRef.current.computeLineDistances();
-    }
-  }, [geometry]);
-
-  return (
-    <line ref={lineRef} geometry={geometry}>
-      <lineDashedMaterial
-        ref={materialRef}
-        color={color}
-        dashSize={0.25}
-        gapSize={0.18}
-        transparent
-        opacity={0.35}
-        depthWrite={false}
-        linewidth={1}
-      />
-    </line>
-  );
+  return <primitive object={line} />;
 };
 
 // 2. Random Wind Particles layer
