@@ -135,7 +135,7 @@ export const F1Car: React.FC<F1CarProps> = ({
     }
 
     // 3. DRS Flap lift (rotate around local X axis)
-    if (drsFlap) drsFlap.rotation.x = drsProgress * 0.45;
+    if (drsFlap) drsFlap.rotation.x = drsProgress * 0.85;
   });
 
   return <primitive object={scene} />;

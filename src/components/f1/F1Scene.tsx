@@ -28,8 +28,9 @@ const KEYFRAMES = [
   { pos: [1.8, 0.8, 4.2], target: [0, 0.25, 2.7] },        // Scene 2: Front Aero (Nose/Front Wing)
   { pos: [2.5, 0.6, 2.8], target: [0.83, 0.35, 1.95] },   // Scene 3: Wheels (Front Right Wheel)
   { pos: [1.2, 1.5, 1.9], target: [0, 0.70, 0.84] },       // Scene 4: Cockpit (Halo/Steering Wheel)
-  { pos: [2.2, 1.1, -3.2], target: [0, 0.70, -1.96] },      // Scene 5: Rear Wing (DRS Flap Hinge)
-  { pos: [-4.0, 1.1, -3.5], target: [0, 0.35, -0.5] }       // Scene 6: Showcase (Rear 3/4 Side, placed well behind rear wheels)
+  { pos: [0.0, 0.82, 0.92], target: [0.0, 0.70, 0.65] },    // Scene 5: Pilot View (Steering Wheel POV)
+  { pos: [2.2, 1.1, -3.2], target: [0, 0.70, -1.96] },      // Scene 6: Rear Wing (DRS Flap Hinge)
+  { pos: [-4.0, 1.1, -3.5], target: [0, 0.35, -0.5] }       // Scene 7: Showcase (Rear 3/4 Side, placed well behind rear wheels)
 ];
 
 const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
@@ -60,8 +61,8 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
     targetCamPos.fromArray(k0.pos).lerp(new THREE.Vector3().fromArray(k1.pos), frac);
     targetCamLook.fromArray(k0.target).lerp(new THREE.Vector3().fromArray(k1.target), frac);
 
-    // Subtle mouse parallax in Intro (Scene 1) and Final Showcase (Scene 6)
-    if (idx === 0 || idx === 5) {
+    // Subtle mouse parallax in Intro (Scene 1) and Final Showcase (Scene 7)
+    if (idx === 0 || idx === 6) {
       targetCamPos.x += s.mouseX * 0.35;
       targetCamPos.y += s.mouseY * 0.25;
     }
@@ -79,9 +80,9 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
         <F1Car
           wheelRotation={scrollState.current.carDrive}
           drsProgress={
-            scrollState.current.cameraRig >= 4 && scrollState.current.cameraRig < 5
-              ? (scrollState.current.cameraRig - 4) // DRS lifts as we scroll into the rear scene
-              : scrollState.current.cameraRig >= 5
+            scrollState.current.cameraRig >= 5 && scrollState.current.cameraRig < 6
+              ? (scrollState.current.cameraRig - 5) // DRS lifts as we scroll into the rear wing scene
+              : scrollState.current.cameraRig >= 6
               ? 1.0
               : 0
           }
