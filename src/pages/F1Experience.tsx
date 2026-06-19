@@ -43,12 +43,7 @@ export const F1Experience: React.FC = () => {
   // Initialize the shared scroll state
   const scrollState = useRef<ScrollState>({
     progress: 0,
-    explode: 0,
-    blueprint: 0,
-    trackGenerate: 0,
     carDrive: 0,
-    speedActive: 0,
-    freeze: 0,
     cameraRig: 0,
     mouseX: 0,
     mouseY: 0,

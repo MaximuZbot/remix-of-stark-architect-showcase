@@ -1,17 +1,12 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import F1Car from "./F1Car";
 
 export interface ScrollState {
   progress: number; // overall page scroll progress (0-1)
-  explode: number; // no longer exploded, used for animations
-  blueprint: number; // no longer blueprint grid, used for highlights
-  trackGenerate: number;
   carDrive: number; // wheel rotation speed factor
-  speedActive: number;
-  freeze: number;
-  cameraRig: number; // transition between camera states (0: Intro, 1: Aero, 2: Wheels, 3: Cockpit, 4: Rear Wing, 5: Showcase)
+  cameraRig: number; // transition between camera states
   mouseX: number;
   mouseY: number;
   activeGroup?: string; // active group name to highlight
@@ -19,7 +14,6 @@ export interface ScrollState {
 
 interface F1SceneProps {
   scrollState: React.MutableRefObject<ScrollState>;
-  curve?: THREE.CatmullRomCurve3; // Kept optional for backward compatibility
 }
 
 // Camera keyframes for the museum walkthrough choreography
@@ -105,6 +99,7 @@ export const F1Scene: React.FC<F1SceneProps> = ({ scrollState }) => {
       <Canvas
         camera={{ position: [0, 1.2, 5], fov: 52, near: 0.1, far: 100 }}
         shadows
+        gl={{ preserveDrawingBuffer: true }}
       >
         <color attach="background" args={["#f9f8f6"]} />
         
@@ -129,7 +124,9 @@ export const F1Scene: React.FC<F1SceneProps> = ({ scrollState }) => {
           color="#fdf9f0"
         />
 
-        <SceneContent scrollState={scrollState} />
+        <Suspense fallback={null}>
+          <SceneContent scrollState={scrollState} />
+        </Suspense>
       </Canvas>
     </div>
   );
