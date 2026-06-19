@@ -60,7 +60,7 @@ export const F1Car: React.FC<F1CarProps> = ({
 
           const edgesGeometry = new THREE.EdgesGeometry(child.geometry, 20);
           const edgesMaterial = new THREE.LineBasicMaterial({
-            color: 0x1c1917, // Dark charcoal highlight
+            color: 0xd97706, // Glowing amber/gold highlight
             linewidth: 1.5,
             transparent: true,
             opacity: 0,
@@ -117,12 +117,12 @@ export const F1Car: React.FC<F1CarProps> = ({
   useFrame((state, delta) => {
     const { wheels, hubs, drsFlap } = nodesRef.current;
 
-    // 1. Wheel Rotation (spin around local Y axis dynamically based on scroll drive speed factor)
+    // 1. Wheel Rotation (spin around local X axis dynamically based on scroll drive speed factor)
     wheelAngleRef.current += delta * wheelRotation * 2.5;
-    if (wheels.lf) wheels.lf.rotation.y = wheelAngleRef.current;
-    if (wheels.rf) wheels.rf.rotation.y = wheelAngleRef.current;
-    if (wheels.rr) wheels.rr.rotation.y = wheelAngleRef.current;
-    if (wheels.lr) wheels.lr.rotation.y = wheelAngleRef.current;
+    if (wheels.lf) wheels.lf.rotation.x = wheelAngleRef.current;
+    if (wheels.rf) wheels.rf.rotation.x = -wheelAngleRef.current; // Inverted for right side
+    if (wheels.rr) wheels.rr.rotation.x = -wheelAngleRef.current; // Inverted for right side
+    if (wheels.lr) wheels.lr.rotation.x = wheelAngleRef.current;
 
     // 2. Steering Yaw (rotate hubs around local Z axis)
     if (activeGroup === "wheels") {

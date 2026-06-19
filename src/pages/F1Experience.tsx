@@ -361,7 +361,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 1: Introduction */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none">
           <div
-            className={`max-w-4xl text-center px-4 transition-all duration-1000 ease-out ${
+            className={`max-w-3xl text-center p-8 md:p-12 mx-4 border border-stone-200/35 bg-[#f9f8f6]/85 backdrop-blur-md rounded-3xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
               activeScene === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
             }`}
           >
@@ -380,7 +380,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 2: Aerodynamics */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
               activeScene === 1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
@@ -399,7 +399,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 3: Wheel Technology */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
               activeScene === 2 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
@@ -418,7 +418,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 4: Cockpit & Halo */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
               activeScene === 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
@@ -437,7 +437,7 @@ export const F1Experience: React.FC = () => {
         {/* SCENE 5: Rear Section & DRS */}
         <section className="sticky top-0 h-screen w-full flex items-center justify-end pointer-events-none">
           <div
-            className={`max-w-md text-left px-12 md:px-24 transition-all duration-1000 ease-out ${
+            className={`max-w-md text-left p-8 md:p-10 mx-6 md:mx-20 border border-stone-200/30 bg-[#f9f8f6]/85 backdrop-blur-md rounded-2xl shadow-md transition-all duration-1000 ease-out pointer-events-auto ${
               activeScene === 4 ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
             }`}
           >
@@ -460,7 +460,7 @@ export const F1Experience: React.FC = () => {
               activeScene === 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
             }`}
           >
-            <div className="text-center mb-10">
+            <div className="text-center mb-10 p-6 border border-stone-200/20 bg-[#f9f8f6]/85 backdrop-blur-sm rounded-2xl shadow-md max-w-xl">
               <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
                 EXHIBIT CATALOG // TECHNICAL PORTFOLIO
               </span>
