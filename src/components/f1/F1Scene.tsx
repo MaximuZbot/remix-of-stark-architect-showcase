@@ -10,6 +10,7 @@ export interface ScrollState {
   mouseX: number;
   mouseY: number;
   activeGroup?: string; // active group name to highlight
+  drsActive?: boolean; // manual DRS toggle
 }
 
 interface F1SceneProps {
@@ -23,9 +24,102 @@ const KEYFRAMES = [
   { pos: [2.5, 0.6, 2.8], target: [0.83, 0.35, 1.95] },       // Scene 3: Wheels (Front Right Wheel, naturally right-shifted)
   { pos: [1.2, 1.5, 1.9], target: [-0.4, 0.70, 0.84] },       // Scene 4: Cockpit (Halo, shifted target X to -0.4, car moves left)
   { pos: [0.0, 0.82, 0.2], target: [0.0, 0.68, 1.2] },        // Scene 5: Pilot View (Steering Wheel POV, looking forward)
-  { pos: [2.2, 1.1, -3.2], target: [-0.5, 0.70, -1.96] },      // Scene 6: Rear Wing (Shifted target X to -0.5, wing moves left)
+  { pos: [1.6, 0.95, -2.8], target: [-0.5, 0.70, -1.96] },     // Scene 6: Rear Wing (Shifted position closer by ~25% for car size oomph)
   { pos: [3.2, 0.8, 3.8], target: [0.0, 0.25, 0.3] }           // Scene 7: Showcase (Front-right diagonal 3/4 pose matching Image 4)
 ];
+
+interface SpeedLineData {
+  pos: THREE.Vector3;
+  length: number;
+  speed: number;
+}
+
+const WindTunnelLines: React.FC<{ active: boolean }> = ({ active }) => {
+  const count = 40;
+  const linesRef = useRef<THREE.LineSegments>(null);
+  
+  // Generate random horizontal speed lines
+  const { lineData, positions, colors } = useMemo(() => {
+    const lineData: SpeedLineData[] = [];
+    const positions = new Float32Array(count * 6); // 2 vertices per line (start & end)
+    const colors = new Float32Array(count * 6);
+    
+    for (let i = 0; i < count; i++) {
+      // Random coordinates around the car pod
+      const x = (Math.random() - 0.5) * 6;
+      const y = Math.random() * 2.2 + 0.1;
+      const z = (Math.random() - 0.5) * 10;
+      
+      const length = Math.random() * 1.5 + 0.5;
+      const speed = Math.random() * 12 + 8;
+      
+      lineData.push({
+        pos: new THREE.Vector3(x, y, z),
+        length,
+        speed
+      });
+      
+      positions[i * 6] = x;
+      positions[i * 6 + 1] = y;
+      positions[i * 6 + 2] = z;
+      
+      positions[i * 6 + 3] = x;
+      positions[i * 6 + 4] = y;
+      positions[i * 6 + 5] = z - length;
+      
+      for (let j = 0; j < 6; j++) {
+        colors[i * 6 + j] = 0.85;
+      }
+    }
+    
+    return { lineData, positions, colors };
+  }, []);
+
+  useFrame((state, delta) => {
+    if (!linesRef.current || !active) return;
+    const geom = linesRef.current.geometry;
+    const posAttr = geom.getAttribute("position") as THREE.BufferAttribute;
+    
+    for (let i = 0; i < count; i++) {
+      const line = lineData[i];
+      
+      line.pos.z -= line.speed * delta;
+      
+      if (line.pos.z < -6) {
+        line.pos.z = 6;
+        line.pos.x = (Math.random() - 0.5) * 6;
+        line.pos.y = Math.random() * 2.2 + 0.1;
+      }
+      
+      posAttr.setXYZ(i * 2, line.pos.x, line.pos.y, line.pos.z);
+      posAttr.setXYZ(i * 2 + 1, line.pos.x, line.pos.y, line.pos.z - line.length);
+    }
+    
+    posAttr.needsUpdate = true;
+  });
+
+  return (
+    <lineSegments ref={linesRef} visible={active}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          args={[colors, 3]}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial
+        color="#ffffff"
+        transparent
+        opacity={0.35}
+        linewidth={1}
+        depthWrite={false}
+      />
+    </lineSegments>
+  );
+};
 
 const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
   const { camera } = useThree();
@@ -74,7 +168,9 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
         <F1Car
           wheelRotation={scrollState.current.carDrive}
           drsProgress={
-            scrollState.current.cameraRig >= 5 && scrollState.current.cameraRig < 6
+            scrollState.current.drsActive
+              ? 1.0
+              : scrollState.current.cameraRig >= 5 && scrollState.current.cameraRig < 6
               ? (scrollState.current.cameraRig - 5) // DRS lifts as we scroll into the rear wing scene
               : scrollState.current.cameraRig >= 6
               ? 1.0
@@ -89,19 +185,22 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
         <planeGeometry args={[100, 100]} />
         <shadowMaterial opacity={0.12} />
       </mesh>
+
+      {/* Wind Tunnel Streamlines active during Scene 7 (Showcase) */}
+      <WindTunnelLines active={scrollState.current.cameraRig >= 5.9} />
     </group>
   );
 };
 
 export const F1Scene: React.FC<F1SceneProps> = ({ scrollState }) => {
   return (
-    <div className="fixed inset-0 w-full h-full bg-[#f9f8f6] z-10 overflow-hidden pointer-events-none transition-colors duration-500">
+    <div className="fixed inset-0 w-full h-full bg-[#f2f0eb] z-10 overflow-hidden pointer-events-none transition-colors duration-500">
       <Canvas
         camera={{ position: [0, 1.2, 5], fov: 52, near: 0.1, far: 100 }}
         shadows
         gl={{ preserveDrawingBuffer: true }}
       >
-        <color attach="background" args={["#f9f8f6"]} />
+        <color attach="background" args={["#f2f0eb"]} />
         
         {/* Soft, premium studio lighting */}
         <ambientLight intensity={0.75} color="#fcfaf5" />
