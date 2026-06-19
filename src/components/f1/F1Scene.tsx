@@ -24,13 +24,13 @@ interface F1SceneProps {
 
 // Camera keyframes for the museum walkthrough choreography
 const KEYFRAMES = [
-  { pos: [3.2, 0.9, 3.8], target: [0.0, 0.35, 0.3] },         // Scene 1: Intro (Front 3/4)
+  { pos: [3.2, 0.9, 3.8], target: [-1.2, 0.35, 0.3] },         // Scene 1: Intro (Shifted target X to -1.2 to move car right, leaving left side open)
   { pos: [1.8, 0.8, 4.2], target: [0.5, 0.25, 2.7] },         // Scene 2: Front Aero (Shifted target X to 0.5, nose moves right)
   { pos: [2.5, 0.6, 2.8], target: [0.83, 0.35, 1.95] },       // Scene 3: Wheels (Front Right Wheel, naturally right-shifted)
   { pos: [1.2, 1.5, 1.9], target: [-0.4, 0.70, 0.84] },       // Scene 4: Cockpit (Halo, shifted target X to -0.4, car moves left)
   { pos: [0.0, 0.82, 0.2], target: [0.0, 0.68, 1.2] },        // Scene 5: Pilot View (Steering Wheel POV, looking forward)
   { pos: [2.2, 1.1, -3.2], target: [-0.5, 0.70, -1.96] },      // Scene 6: Rear Wing (Shifted target X to -0.5, wing moves left)
-  { pos: [-4.0, 1.1, -3.5], target: [0.0, 0.35, -0.5] }        // Scene 7: Showcase (Rear 3/4 Side)
+  { pos: [3.3, 0.75, 3.9], target: [-1.3, 0.22, 0.3] }         // Scene 7: Showcase (Shifted target X to -1.3 to move car right, leaving left side open)
 ];
 
 const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
@@ -101,12 +101,12 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
 
 export const F1Scene: React.FC<F1SceneProps> = ({ scrollState }) => {
   return (
-    <div className="fixed inset-0 w-full h-full bg-[#f9f8f6] z-10 overflow-hidden pointer-events-none transition-colors duration-500">
+    <div className="fixed inset-0 w-full h-full bg-transparent z-0 overflow-hidden pointer-events-none transition-colors duration-500">
       <Canvas
         camera={{ position: [0, 1.2, 5], fov: 52, near: 0.1, far: 100 }}
         shadows
       >
-        <color attach="background" args={["#f9f8f6"]} />
+
         
         {/* Soft, premium studio lighting */}
         <ambientLight intensity={0.75} color="#fcfaf5" />

@@ -43,6 +43,7 @@ const PROJECTS = [
 
 export const F1Experience: React.FC = () => {
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<any>(null);
   
   const [activeScene, setActiveScene] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -191,6 +192,7 @@ export const F1Experience: React.FC = () => {
       wheelMultiplier: 0.95,
       infinite: false,
     });
+    lenisRef.current = lenis;
 
     let lastTime = 0;
     function raf(time: number) {
@@ -323,6 +325,7 @@ export const F1Experience: React.FC = () => {
     return () => {
       ctx.revert();
       lenis.destroy();
+      lenisRef.current = null;
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [soundEnabled]);
@@ -360,10 +363,56 @@ export const F1Experience: React.FC = () => {
         {soundEnabled ? <Volume2 size={16} className="text-stone-900" /> : <VolumeX size={16} />}
       </button>
 
-      {/* Museum Exhibit Scroll Indicator */}
-      <div className="fixed bottom-6 left-6 z-50 flex items-center gap-2 border border-stone-200/60 bg-[#f9f8f6]/70 backdrop-blur-sm rounded-full px-4 py-1.5 shadow-sm text-stone-600 text-[9px] font-mono tracking-wider">
-        <HelpCircle size={12} className="text-stone-500" />
-        SCROLL SLOWLY TO EXPLORE ENGINEERING DETAILS
+      {/* Bottom Monospaced Navigation HUD */}
+      <div className="fixed bottom-6 left-0 right-0 z-50 px-12 md:px-24 flex items-center justify-between font-mono text-[9px] tracking-widest text-stone-500 pointer-events-auto">
+        <button
+          onClick={() => {
+            if (activeScene > 0 && lenisRef.current) {
+              lenisRef.current.scrollTo((activeScene - 1) * window.innerHeight);
+            }
+          }}
+          className={`flex items-center gap-2 transition-all cursor-pointer ${
+            activeScene > 0 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
+          }`}
+          disabled={activeScene === 0}
+        >
+          ← PREVIOUS
+        </button>
+
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="flex gap-2">
+            {[...Array(7)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  if (lenisRef.current) {
+                    lenisRef.current.scrollTo(i * window.innerHeight);
+                  }
+                }}
+                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                  activeScene === i ? "bg-stone-950 scale-125" : "bg-stone-300 hover:bg-stone-400"
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-[8px] font-bold text-stone-900">
+            SCENE {String(activeScene + 1).padStart(2, "0")} / 07
+          </span>
+        </div>
+
+        <button
+          onClick={() => {
+            if (activeScene < 6 && lenisRef.current) {
+              lenisRef.current.scrollTo((activeScene + 1) * window.innerHeight);
+            }
+          }}
+          className={`flex items-center gap-2 transition-all cursor-pointer ${
+            activeScene < 6 ? "hover:text-stone-900 opacity-100" : "opacity-35 cursor-not-allowed"
+          }`}
+          disabled={activeScene === 6}
+        >
+          NEXT →
+        </button>
       </div>
 
 
@@ -371,13 +420,13 @@ export const F1Experience: React.FC = () => {
       {/* ========================================================
           SCROLLING TARGET WRAPPER
           ======================================================== */}
-      <div ref={scrollWrapperRef} className="relative z-20 h-[700vh] w-full">
+      <div ref={scrollWrapperRef} className="relative h-[700vh] w-full">
         
         {/* SCENE 1: Introduction */}
-        <section className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none">
+        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`max-w-3xl text-center transition-all duration-1000 ease-out ${
-              activeScene === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out ${
+              activeScene === 0 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-stone-200/60 bg-[#fbf9f6]/80 backdrop-blur-sm text-stone-500 text-[9px] tracking-widest uppercase font-mono mb-6 shadow-sm">
@@ -386,7 +435,7 @@ export const F1Experience: React.FC = () => {
             <h1 className="text-5xl md:text-7xl font-serif font-normal text-stone-900 tracking-tight leading-tight">
               The Geometry of Speed
             </h1>
-            <p className="mt-6 text-stone-500 font-sans text-xs tracking-widest uppercase max-w-md mx-auto">
+            <p className="mt-6 text-stone-500 font-sans text-xs tracking-widest uppercase max-w-md">
               An editorial walkthrough of the Red Bull RB20
             </p>
           </div>
@@ -488,65 +537,51 @@ export const F1Experience: React.FC = () => {
         </section>
 
         {/* SCENE 7: Final Showcase & Editorial Portfolio */}
-        <section className="sticky top-0 h-screen w-full flex flex-col justify-center items-center z-30">
+        <section className="sticky top-0 h-screen w-full flex items-center justify-start pointer-events-none">
           <div
-            className={`w-full max-w-6xl px-8 flex flex-col items-center transition-all duration-1000 ease-out ${
-              activeScene === 6 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+            className={`max-w-md text-left px-12 md:px-16 transition-all duration-1000 ease-out ${
+              activeScene === 6 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
             }`}
           >
-            <div className="text-center mb-10">
-              <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
-                EXHIBIT CATALOG // TECHNICAL PORTFOLIO
-              </span>
-              <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2">
-                Engineering Showcase
-              </h2>
-              <p className="text-stone-500 text-[9px] font-mono uppercase tracking-widest mt-2">
-                Click a component to audit my software portfolios
-              </p>
-            </div>
+            <span className="text-stone-400 text-[9px] font-mono tracking-widest uppercase">
+              EXHIBIT CATALOG // TECHNICAL SPECIFICATIONS
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-stone-900 mt-2 mb-6">
+              Engineering Showcase
+            </h2>
 
-            {/* Grid of Interactive Project Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-              {PROJECTS.map((project, idx) => (
-                <a
-                  key={idx}
-                  href={project.link}
-                  className="flex flex-col p-5 border border-stone-200 bg-[#fbf9f6]/95 hover:bg-stone-900 hover:text-white hover:border-stone-900 backdrop-blur-md rounded-lg group transition-all duration-300 shadow-sm hover:shadow-md"
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-[9px] font-mono bg-stone-100 border border-stone-200 text-stone-600 rounded px-2 py-0.5 tracking-wider group-hover:bg-stone-800 group-hover:border-stone-700 group-hover:text-stone-300 transition-colors">
-                      {project.part}
-                    </span>
-                    <span className="text-[9px] text-stone-400 font-mono tracking-wider group-hover:text-stone-500 transition-colors">
-                      {project.tech}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold font-serif text-stone-900 group-hover:text-white transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-stone-500 leading-relaxed mt-2 group-hover:text-stone-300 transition-colors">
-                    {project.desc}
-                  </p>
-                </a>
+            {/* Specifications Specs Sheet Grid */}
+            <div className="w-full max-w-[340px] border-t border-stone-200/60 pt-6 font-mono text-[9px] tracking-widest text-stone-600">
+              {[
+                { name: "Power Unit", value: "Honda RBPTH002 V6 Turbo Hybrid" },
+                { name: "Chassis Structure", value: "Molded carbon-composite monocoque" },
+                { name: "Gearbox", value: "8-Speed direct-shift, hydraulic system" },
+                { name: "Total Weight", value: "798 kg (with driver and instrumentation)" },
+                { name: "Active Aero", value: "DRS Flap (85mm slot gap clearance)" },
+                { name: "Braking System", value: "Carbon-carbon discs with Brembo calipers" }
+              ].map((spec, i) => (
+                <div key={i} className="flex justify-between py-2.5 border-b border-stone-200/30">
+                  <span className="uppercase text-stone-400 mr-4">{spec.name}</span>
+                  <span className="text-stone-900 font-bold uppercase text-right">{spec.value}</span>
+                </div>
               ))}
             </div>
 
             {/* Sub-footer contact details */}
-            <div className="mt-10 text-center">
-              <p className="text-stone-400 text-[9px] font-mono">
+            <div className="mt-10 pointer-events-auto">
+              <p className="text-stone-400 text-[8px] font-mono tracking-widest uppercase">
                 INTERESTED IN COLLABORATING?
               </p>
-              <div className="mt-3 flex gap-4 justify-center">
+              <div className="mt-4 flex gap-4">
                 <a
                   href="/#contact"
-                  className="px-6 py-2 rounded-full border border-stone-950 bg-stone-900 text-white hover:bg-stone-800 text-xs font-bold tracking-wider uppercase transition-all shadow-sm"
+                  className="px-6 py-2 rounded-full border border-stone-950 bg-stone-900 text-white hover:bg-stone-800 text-[10px] font-mono tracking-widest uppercase transition-all shadow-sm cursor-pointer"
                 >
                   Get In Touch
                 </a>
                 <Link
                   to="/"
-                  className="px-6 py-2 rounded-full border border-stone-200 text-stone-600 hover:text-stone-900 text-xs font-bold tracking-wider uppercase transition-all shadow-sm"
+                  className="px-6 py-2 rounded-full border border-stone-200 text-stone-600 hover:text-stone-900 text-[10px] font-mono tracking-widest uppercase transition-all shadow-sm"
                 >
                   Classic Portfolio
                 </Link>

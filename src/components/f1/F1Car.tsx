@@ -118,7 +118,7 @@ export const F1Car: React.FC<F1CarProps> = ({
     const { wheels, hubs, drsFlap } = nodesRef.current;
 
     // 1. Wheel Rotation (spin around local X axis dynamically based on scroll drive speed factor)
-    wheelAngleRef.current += delta * wheelRotation * 2.5;
+    wheelAngleRef.current -= delta * wheelRotation * 2.5;
     if (wheels.lf) wheels.lf.rotation.x = wheelAngleRef.current;
     if (wheels.rf) wheels.rf.rotation.x = -wheelAngleRef.current; // Inverted for right side
     if (wheels.rr) wheels.rr.rotation.x = -wheelAngleRef.current; // Inverted for right side
