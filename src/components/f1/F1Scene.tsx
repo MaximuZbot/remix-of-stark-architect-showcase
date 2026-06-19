@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import F1Car from "./F1Car";
 import AirflowStreamlines from "./AirflowStreamlines";
+import ErrorBoundary from "./ErrorBoundary";
 
 export interface ScrollState {
   progress: number; // overall page scroll progress (0-1)
@@ -106,35 +107,37 @@ const SceneContent: React.FC<F1SceneProps> = ({ scrollState }) => {
 export const F1Scene: React.FC<F1SceneProps> = ({ scrollState }) => {
   return (
     <div className="fixed inset-0 w-full h-full bg-transparent z-0 overflow-hidden pointer-events-none transition-colors duration-500">
-      <Canvas
-        camera={{ position: [0, 1.2, 5], fov: 52, near: 0.1, far: 100 }}
-        shadows
-      >
+      <ErrorBoundary>
+        <Canvas
+          camera={{ position: [0, 1.2, 5], fov: 52, near: 0.1, far: 100 }}
+          shadows
+        >
 
-        
-        {/* Soft, premium studio lighting */}
-        <ambientLight intensity={0.75} color="#fcfaf5" />
-        
-        {/* Main studio spotlight casting soft contact shadows */}
-        <directionalLight
-          position={[6, 10, 4]}
-          intensity={1.6}
-          color="#ffffff"
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-bias={-0.0001}
-        />
-        
-        {/* Soft warm fill light */}
-        <directionalLight
-          position={[-6, 4, -4]}
-          intensity={0.6}
-          color="#fdf9f0"
-        />
 
-        <SceneContent scrollState={scrollState} />
-      </Canvas>
+          {/* Soft, premium studio lighting */}
+          <ambientLight intensity={0.75} color="#fcfaf5" />
+          
+          {/* Main studio spotlight casting soft contact shadows */}
+          <directionalLight
+            position={[6, 10, 4]}
+            intensity={1.6}
+            color="#ffffff"
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-bias={-0.0001}
+          />
+          
+          {/* Soft warm fill light */}
+          <directionalLight
+            position={[-6, 4, -4]}
+            intensity={0.6}
+            color="#fdf9f0"
+          />
+
+          <SceneContent scrollState={scrollState} />
+        </Canvas>
+      </ErrorBoundary>
     </div>
   );
 };
