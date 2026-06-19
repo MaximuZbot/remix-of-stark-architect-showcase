@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import F1Scene, { ScrollState } from "@/components/f1/F1Scene";
 import { ArrowLeft, Volume2, VolumeX, Sparkles, HelpCircle } from "lucide-react";
+import { useProgress } from "@react-three/drei";
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -42,6 +43,7 @@ const PROJECTS = [
 ];
 
 export const F1Experience: React.FC = () => {
+  const { active, progress } = useProgress();
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const lenisRef = useRef<any>(null);
   
@@ -338,6 +340,26 @@ export const F1Experience: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-[#f2f0ea] text-stone-900 overflow-x-hidden select-none font-sans">
       
+      {/* Technical Loading Progress Overlay */}
+      {active && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#f2f0ea] font-mono text-[9px] tracking-[0.25em] text-stone-500 transition-all duration-500">
+          <div className="flex flex-col items-center gap-4 max-w-xs w-full px-6">
+            <span className="font-bold text-stone-900 uppercase">
+              LOADING MODEL
+            </span>
+            <div className="w-full h-[1px] bg-stone-200 relative overflow-hidden rounded-full">
+              <div 
+                className="h-full bg-stone-900 transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-stone-400">
+              {Math.round(progress)}%
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Subtle organic noise overlay */}
       <div className="noise-overlay" />
 
